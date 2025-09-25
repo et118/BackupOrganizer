@@ -1,4 +1,4 @@
-from datetime import datetime
+from Utility import get_current_datestring
 from BackupEntry import BackupEntry
 
 class DataCollection:
@@ -19,7 +19,7 @@ class DataCollection:
             name: the name of the DataCollection.
             description: the description of the DataCollection.
         """
-        current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        current_date = get_current_datestring()
 
         self.name: str = name
         self.description: str = description
