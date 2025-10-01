@@ -41,7 +41,7 @@ class DataCollection:
         string = ""
         string += self.name + " | "
         string += self.modification_date + " | "
-        string += "Updated: " + str(self.updated) + "\n"
+        string += "Updated: " + str(self.updated)
         return string
 
     def full_str(self) -> list[str]:
