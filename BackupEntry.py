@@ -1,4 +1,3 @@
-from Utility import get_current_datestring
 
 class BackupEntry:
     """Storage class for backup locations. Only stores the backup-path.
@@ -9,7 +8,7 @@ class BackupEntry:
         location: The path to the location where the backup is stored
     """
 
-    def __init__(self, name, location):
+    def __init__(self, name : str, location : str, date : str) -> None:
         """Creates a new BackupEntry with specified data.
 
         Args:
@@ -17,5 +16,5 @@ class BackupEntry:
             location: The path to the location wehre the backup is stored
         """
         self.name = name
-        self.date = get_current_datestring()
+        self.date = date
         self.location = location
