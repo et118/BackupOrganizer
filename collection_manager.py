@@ -71,3 +71,9 @@ class CollectionManager:
                 return collection.full_str()
 
         raise CollectionNotFoundError(f"Collection with name '{collection_name}' not found")
+
+    def get(self, collection_name : str) -> DataCollection:
+        for collection in self.data_collections:
+            if collection.name == collection_name:
+                return collection
+        raise CollectionNotFoundError(f"Collection with name '{collection_name}' not found")
