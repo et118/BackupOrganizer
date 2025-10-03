@@ -73,7 +73,7 @@ class CollectionManager:
         """Returns the result of DataCollection.full_str() for the first DataCollection with a matching name.
 
         Returns:
-            A list of strings formatted according to the output of DataCollection.full_str(). \n
+            A list of strings formatted according to the output of `DataCollection.full_str()`. \n
             Example return value:
             ```python
                 ["DataCollection1", "The best collection", "Today", "13:58", "True"]
@@ -91,7 +91,7 @@ class CollectionManager:
         """Returns the first DataCollection with a matching name.
 
         Returns:
-            The DataCollection that fulfills DataCollection.name == collection_name
+            The `DataCollection` that fulfills `DataCollection.name == collection_name`
         
         Raises:
             `CollectionNotFoundError`: Collection with name '`collection_name`' not found
