@@ -77,3 +77,9 @@ class CollectionManager:
             if collection.name == collection_name:
                 return collection
         raise CollectionNotFoundError(f"Collection with name '{collection_name}' not found")
+
+mg = CollectionManager()
+mg.add_collection("Collection1", "This is the first collection", utility.get_current_datestring(), utility.get_current_datestring(), True)
+mg.add_collection("Collection2", "This is the second collection", utility.get_current_datestring(), utility.get_current_datestring(), False)
+
+print(mg.get("Collection1"))
