@@ -1,7 +1,7 @@
 from BackupEntry import BackupEntry
 
 class DataCollection:
-    """Storage class for BackupEntries
+    """Storage class that holds a list of BackupEntries
 
     Attributes:
         name: The name of the DataCollection
@@ -35,7 +35,7 @@ class DataCollection:
         * modification_date
         * updated
 
-        Example Return Value:
+        Return Value:
             "{name} | {modification_date} | Updated: {updated}"
         """
         string = ""
@@ -51,6 +51,15 @@ class DataCollection:
         * creation_date
         * modification_date
         * updated
+
+        Return Value:
+            [
+                "{name}",
+                "{description}",
+                "{creation_date}",
+                "{modification_date}",
+                str({updated})
+            ]
         """
         string_list = []
         string_list.append(self.name)
