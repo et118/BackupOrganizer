@@ -1,2 +1,2 @@
 class CollectionNotFoundError(Exception):
-    pass
+    """Raised when no collection matching the criteria was found"""

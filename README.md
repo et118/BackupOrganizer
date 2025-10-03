@@ -29,3 +29,70 @@ Each data collection consists of:
 * Delete a specific DataCollection
 * Remove a specific backup from a specific DataCollection
 
+## Docstring format:
+https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings
+
+### Value Assignment
+```python
+variable_1 : str = "Hello World"
+variable_2 : list[str] = [variable_1]
+def function_name(argument_1 : str) -> str:
+    return argument_1 + "!"
+
+def function_name2() -> None:
+    print("Hello World")
+```
+
+### Files:
+```python
+"""Short module/program summary
+
+Larger description
+
+Typical usage example:
+    foo = Foo()
+    bar = foo.get_bar()
+"""
+```
+
+### Functions
+```python
+"""Short function summary
+
+More detailed function information
+
+Args:
+    argument: Argument description
+    another_argument: Another argument description
+
+Returns:
+    Description of what it returns, with an example:
+    [
+        "test1",
+        "test2",
+        "test3"
+    ]
+
+Raises:
+    ExceptionName: Exception message
+"""
+```
+
+### Classes:
+```python
+"""Short class summary
+
+More detailed class information.
+
+Attributes:
+    public_variable: Description of said variable
+    another_public_variable: Yet another description of said variable
+
+
+"""
+```
+
+### Exception Classes:
+```python
+"""Raised when [CONDITION]"""
+```
