@@ -13,7 +13,7 @@ class CollectionManager:
         """Initializes the instance with data_collections as an empty list of DataCollection Objects"""
         self.data_collections: list[DataCollection] = []
     
-    def add_collection(self, name : str, description : str, creation_date : str, modification_date : str, updated : bool) -> None:
+    def add_collection(self, name : str, description : str, creation_date : str, modification_date : str, updated : bool) -> DataCollection:
         """Adds a new DataCollection object to the data_collections list.
 
         Args:
@@ -22,9 +22,13 @@ class CollectionManager:
             `creation_date`: The creation date of the DataCollection
             `modification_date`: The modification date of the DataCollection
             `updated`: Whether or not the DataCollection is up to date
+        
+        Returns:
+            Returns a reference to the created DataCollection object.
         """
         data_collection = DataCollection(name, description, creation_date, modification_date, updated)
         self.data_collections.append(data_collection)
+        return data_collection
     
     def overview(self) -> list[str]:
         """Returns a list of strings containing a small overview for each of the DataCollection objects
@@ -89,10 +93,3 @@ class CollectionManager:
             if collection.name == collection_name:
                 return collection
         raise CollectionNotFoundError(f"Collection with name '{collection_name}' not found")
-
-mg = CollectionManager()
-mg.add_collection("Collection1", "This is the first collection", utility.get_current_datestring(), utility.get_current_datestring(), True)
-mg.add_collection("Collection2", "This is the second collection", utility.get_current_datestring(), utility.get_current_datestring(), False)
-
-#for item in mg.detailed_overview():
-#    print(item)

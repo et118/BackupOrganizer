@@ -28,6 +28,17 @@ class DataCollection:
         self.updated: bool = updated
         self.backup_entries: list[BackupEntry] = []
 
+    def add_backup(self, backup_name : str, backup_date : str, backup_location : str) -> None:
+        """Adds a BackupEntry to the end of `backup_entries`
+
+        Args:
+            `backup_name`: The name of the new BackupEntry
+            `backup_date`: The date of the BackupEntry as a string
+            `backup_location`: The path where the backup is stored
+        """
+        backup_entry = BackupEntry(backup_name, backup_location, backup_date)
+        self.backup_entries.append(backup_entry)
+
     def brief_str(self) -> str:
         """Returns a formatted string containing the following attributes as strings:
         * `name`
@@ -51,15 +62,10 @@ class DataCollection:
         return string
 
     def full_str(self) -> list[str]:
-        """Returns a list containing the following attributes as strings:
-        * `name`
-        * `description`
-        * `creation_date`
-        * `modification_date`
-        * `updated`
+        """Returns a list containing the attributes as strings:
 
         Returns:
-            Returns a string with formatting like this:
+            Formatted like this:
             ```python
             [
                 "{name}",
