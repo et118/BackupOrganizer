@@ -88,6 +88,14 @@ class CollectionManager:
         raise CollectionNotFoundError(f"Collection with name '{collection_name}' not found")
 
     def get(self, collection_name : str) -> DataCollection:
+        """Returns the first DataCollection with a matching name.
+
+        Returns:
+            The DataCollection that fulfills DataCollection.name == collection_name
+        
+        Raises:
+            `CollectionNotFoundError`: Collection with name '`collection_name`' not found
+        """
         for collection in self.data_collections:
             if collection.name == collection_name:
                 return collection
