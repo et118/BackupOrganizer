@@ -7,7 +7,7 @@ class DataCollection:
         `name`: The name of the DataCollection
         `description`: The description of the DataCollection
         `creation_date`: The date this DataCollection was created
-        `modification_date`: The date this Datacollection was created. (default creation_date)
+        `modification_date`: The date this Datacollection was last modified.
         `updated`: Flag indicating if this DataCollection is up to date
         `backup_entries`: List containing all BackupEntries
     """

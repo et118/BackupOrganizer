@@ -2,7 +2,6 @@ from data_collection import DataCollection
 from custom_exceptions import CollectionNotFoundError
 import utility
 
-
 class CollectionManager:
     """Manager class holding and managing DataCollection objects.
 
@@ -77,7 +76,7 @@ class CollectionManager:
                 ["DataCollection1", "The best collection", "Today", "13:58", "True"]
             ```
         Raises:
-            `CollectionNotFoundError`: Collection with name '{collection_name}' not found
+            `CollectionNotFoundError`: Collection with name '`collection_name`' not found
         """
         for collection in self.data_collections:
             if collection.name == collection_name:
