@@ -44,6 +44,7 @@ def function_name2() -> None:
 ```
 
 ### Files:
+(personal opinion, i think its a bit redundant)
 ```python
 """Short module/program summary
 
@@ -56,26 +57,40 @@ Typical usage example:
 ```
 
 ### Functions
+You can use `` to mark return values so its easier to read.
 ```python
 """Short function summary
 
 More detailed function information
 
 Args:
-    argument: Argument description
-    another_argument: Another argument description
+    `argument`: Argument description
+    `another_argument`: Another argument description
 
 Returns:
     Description of what it returns, with an example:
+    \```python
     [
         "test1",
         "test2",
         "test3"
     ]
+    \```
 
 Raises:
     ExceptionName: Exception message
 """
+```
+
+```python
+def __init__(self, argument1, argument2):
+    """Initializes the instance with argument1 and argument2
+
+    Args:
+        `argument1`: Description
+        `argument2`: Description
+    """
+    ...
 ```
 
 ### Classes:
@@ -85,8 +100,8 @@ Raises:
 More detailed class information.
 
 Attributes:
-    public_variable: Description of said variable
-    another_public_variable: Yet another description of said variable
+    `public_variable`: Description of said variable
+    `another_public_variable`: Yet another description of said variable
 
 
 """

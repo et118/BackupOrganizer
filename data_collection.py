@@ -4,24 +4,23 @@ class DataCollection:
     """Storage class that holds a list of BackupEntries
 
     Attributes:
-        name: The name of the DataCollection
-        description: The description of the DataCollection
-        creation_date: The date this DataCollection was created
-        modification_date: The date this Datacollection was created. (default creation_date)
-        updated: Flag indicating if this DataCollection is up to date
-        backup_entries: List containing all BackupEntries
+        `name`: The name of the DataCollection
+        `description`: The description of the DataCollection
+        `creation_date`: The date this DataCollection was created
+        `modification_date`: The date this Datacollection was created. (default creation_date)
+        `updated`: Flag indicating if this DataCollection is up to date
+        `backup_entries`: List containing all BackupEntries
     """
     def __init__(self, name : str, description : str, creation_date : str, modification_date : str, updated : bool) -> None:
-        """Creates a new DataCollection with the modification_date set to creation_date.
+        """Initializes the instance with the arguments provided assigned to the attributes.
         
         Args:
-            name: The name of the DataCollection.
-            description: The description of the DataCollection.
-            creation_date: The datestring containing the date of creation
-            modification_daate: The datestring containing the date of modification
-            updated: If the DataCollection is updated
+            `name`: The name of the DataCollection.
+            `description`: The description of the DataCollection.
+            `creation_date`: The datestring containing the date of creation
+            `modification_date`: The datestring containing the date of the latest modification
+            `updated`: If the DataCollection is updated
         """
-
         self.name: str = name
         self.description: str = description
         self.creation_date: str = creation_date
@@ -30,13 +29,20 @@ class DataCollection:
         self.backup_entries: list[BackupEntry] = []
 
     def brief_str(self) -> str:
-        """Returns a string containing the following attributes as strings:
-        * name
-        * modification_date
-        * updated
+        """Returns a formatted string containing the following attributes as strings:
+        * `name`
+        * `modification_date`
+        * `updated`
 
-        Return Value:
-            "{name} | {modification_date} | Updated: {updated}"
+        Returns:
+            Returns a string with formatting like this:
+                ```python
+                "{name} | {modification_date} | Updated: {updated}"
+                ```
+            Example return value:
+                ```python
+                "DataCollection1 | 1960 4 October | Updated: True"
+                ```
         """
         string = ""
         string += self.name + " | "
@@ -46,20 +52,27 @@ class DataCollection:
 
     def full_str(self) -> list[str]:
         """Returns a list containing the following attributes as strings:
-        * name
-        * description
-        * creation_date
-        * modification_date
-        * updated
+        * `name`
+        * `description`
+        * `creation_date`
+        * `modification_date`
+        * `updated`
 
-        Return Value:
+        Returns:
+            Returns a string with formatting like this:
+            ```python
             [
                 "{name}",
                 "{description}",
                 "{creation_date}",
                 "{modification_date}",
-                str({updated})
+                "{updated}"
             ]
+            ```
+            Example return value:
+                ```python
+                ["DataCollection1", "The best collection", "Today", "13:58", "True"]
+                ```
         """
         string_list = []
         string_list.append(self.name)
