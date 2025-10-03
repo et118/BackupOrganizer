@@ -1,5 +1,5 @@
-from DataCollection import DataCollection
-import Utility
+from data_collection import DataCollection
+import utility
 
 
 class CollectionManager:
@@ -44,7 +44,7 @@ class CollectionManager:
         """Returns a detailed list containing a list with strings for each DataCollection object
         in data_collections:
 
-        Example Return Value:
+        Return Value:
             [
                 ["{name}", "{description}", "creation_date", "modification_date", "updated"],
                 ...
@@ -54,10 +54,25 @@ class CollectionManager:
         for collection in self.data_collections:
             output.append(collection.full_str())
         return output
+    
+    def info(self, collection_name : str) -> list[str]:
+        """Returns a list of strings corresponding to DataCollection.full_str() for the 
+        DataCollection with the name datacollection_name.
+
+        Example Return Value:
+            ["{name}", "{description}", "creation_date", "modification_date", "updated"]
+        
+        Raises:
+
+        """
+        for collection in self.data_collections:
+            if collection.name == collection_name:
+                return collection.full_str()
+        raise 
 
 mg = CollectionManager()
-mg.add_collection("Collection1", "This is the first collection", Utility.get_current_datestring(), Utility.get_current_datestring(), True)
-mg.add_collection("Collection2", "This is the second collection", Utility.get_current_datestring(), Utility.get_current_datestring(), False)
+mg.add_collection("Collection1", "This is the first collection", utility.get_current_datestring(), utility.get_current_datestring(), True)
+mg.add_collection("Collection2", "This is the second collection", utility.get_current_datestring(), utility.get_current_datestring(), False)
 
 for thing in mg.detailed_overview():
     print(thing)
