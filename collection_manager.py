@@ -1,4 +1,5 @@
 from data_collection import DataCollection
+from custom_exceptions import CollectionNotFoundError
 import utility
 
 
@@ -63,16 +64,10 @@ class CollectionManager:
             ["{name}", "{description}", "creation_date", "modification_date", "updated"]
         
         Raises:
-
+            CollectionNotFoundError: Collection with name '{collection_name}' not found
         """
         for collection in self.data_collections:
             if collection.name == collection_name:
                 return collection.full_str()
-        raise 
 
-mg = CollectionManager()
-mg.add_collection("Collection1", "This is the first collection", utility.get_current_datestring(), utility.get_current_datestring(), True)
-mg.add_collection("Collection2", "This is the second collection", utility.get_current_datestring(), utility.get_current_datestring(), False)
-
-for thing in mg.detailed_overview():
-    print(thing)
+        raise CollectionNotFoundError(f"Collection with name '{collection_name}' not found")
