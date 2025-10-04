@@ -72,6 +72,9 @@ class CollectionManager:
     def info(self, collection_name : str) -> list[str]:
         """Returns the result of DataCollection.full_str() for the first DataCollection with a matching name.
 
+        Args:
+            `collection_name`: The name to match
+
         Returns:
             A list of strings formatted according to the output of `DataCollection.full_str()`. \n
             Example return value:
@@ -89,6 +92,9 @@ class CollectionManager:
 
     def get(self, collection_name : str) -> DataCollection:
         """Returns the first DataCollection with a matching name.
+
+        Args:
+            `collection_name`: The name to match
 
         Returns:
             The `DataCollection` that fulfills `DataCollection.name == collection_name`
