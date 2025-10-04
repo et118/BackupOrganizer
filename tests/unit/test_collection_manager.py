@@ -64,7 +64,8 @@ def test_add_collection_values(empty_manager : CollectionManager, name : str, de
 
 def test_overview_returns_brief_str(filled_manager : CollectionManager, monkeypatch):
     expected = []
-
+    # Here we use monkeypatch which overwrites a method of an object with our own
+    # so called mocking.
     for collection in filled_manager.data_collections:
         mocked_string = f"MOCKED_OUTPUT_FOR: {collection.name}"
         expected.append(mocked_string)
