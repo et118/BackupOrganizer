@@ -1,3 +1,4 @@
+from custom_exceptions import BackupNotFoundError
 from .backup_entry import BackupEntry
 
 class DataCollection:
@@ -38,6 +39,37 @@ class DataCollection:
         """
         backup_entry = BackupEntry(backup_name, backup_location, backup_date)
         self.backup_entries.append(backup_entry)
+    
+    def remove_backup(self, backup_entry : BackupEntry) -> None:
+        """Removes `backup_entry` from `backup_entries`
+
+        Args:
+            `backup_entry`: The BackupEntry to be removed
+
+        Raises:
+            `BackupNotFoundError`: BackupEntry with name `backup_entry.name` not found in `backup_entries`
+        """
+        if backup_entry not in self.backup_entries:
+            raise BackupNotFoundError("BackupEntry not found in `backup_entries`")
+        else:
+            self.backup_entries.remove(backup_entry)
+    
+    def get_backup(self, backup_name : str) -> BackupEntry:
+        """Returns the first BackupEntry with a matching name
+
+        Args:
+            `backup_name`: The name to match
+        
+        Returns:
+            The first `BackupEntry` that fulfills `BackupEntry.name == backup_name`
+        
+        Raises:
+            `BackupNotFoundError`: BackupEntry with name `backup_name` not found in `backup_entries`
+        """
+        for backup in self.backup_entries:
+            if backup.name == backup_name:
+                return backup
+        raise BackupNotFoundError(f"BackupEntry with name '{backup_name}' not found in `backup_entries`")
 
     def brief_str(self) -> str:
         """Returns a formatted string containing the following attributes as strings:
