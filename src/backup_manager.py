@@ -1,5 +1,4 @@
-
-from .data_collection import DataCollection
+from data_collection import DataCollection
 
 class BackupManager():
     """Unused Class being left for Archival purposes. 
