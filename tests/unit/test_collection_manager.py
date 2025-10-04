@@ -78,13 +78,9 @@ def test_overview_returns_brief_str(filled_manager : CollectionManager, monkeypa
 
 def test_detailed_overview_returns_full_str(filled_manager : CollectionManager, monkeypatch):
     expected = []
-    # Here we use monkeypatch which overwrites a method of an object with our own
-    # so called mocking.
     for collection in filled_manager.data_collections:
         mocked_list = [f"MOCKED_OUTPUT_FOR: {collection.name}", f"MOCKED_OUTPUT_FOR: {collection.description}"]
         expected.append(mocked_list)
-        #This lambda makes sure its a value, and not a reference, being passed along
-        #which brief_str returns
         monkeypatch.setattr(collection, "full_str", lambda val=mocked_list: val)
 
     overviews = filled_manager.detailed_overview()
