@@ -1,4 +1,4 @@
-from backup_entry import BackupEntry
+from .backup_entry import BackupEntry
 
 class DataCollection:
     """Storage class that holds a list of BackupEntries

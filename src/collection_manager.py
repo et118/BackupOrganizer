@@ -1,5 +1,5 @@
-from data_collection import DataCollection
-from custom_exceptions import CollectionNotFoundError
+from .data_collection import DataCollection
+from .custom_exceptions import CollectionNotFoundError
 
 class CollectionManager:
     """Manager class holding and managing DataCollection objects.
