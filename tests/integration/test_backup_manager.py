@@ -15,7 +15,7 @@ def collection_object():
     manager = CollectionManager()
     data_collection = manager.add_collection(
         "TestCollection1",
-        "Testcollection used for unit tests",
+        "Testcollection used for tests",
         src.utility.get_current_datestring(),
         src.utility.get_current_datestring(),
         True)
