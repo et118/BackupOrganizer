@@ -2,7 +2,10 @@ class CollectionNotFoundError(Exception):
     """Raised when no DataCollection matching the criteria was found"""
 
 class CollectionAlreadyExistsError(Exception):
-    """Raised when trying to add a collection with the same name as another"""
+    """Raised when trying to add a DataCollection with the same name as another"""
 
 class BackupNotFoundError(Exception):
     """Raised when no BackupEntry matching the criteria was found"""
+
+class BackupAlreadyExistsError(Exception):
+    """Raised when trying to add a BackupEntry with the same name as another"""
