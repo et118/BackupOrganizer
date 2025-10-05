@@ -1,5 +1,4 @@
 from datetime import datetime
-import pytest
 from src.utility import get_current_datestring
 
 class MockDatetime:
