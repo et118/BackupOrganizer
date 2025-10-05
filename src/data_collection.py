@@ -1,4 +1,4 @@
-from custom_exceptions import BackupNotFoundError
+from custom_exceptions import BackupAlreadyExistsError, BackupNotFoundError
 from backup_entry import BackupEntry
 
 class DataCollection:
@@ -43,6 +43,10 @@ class DataCollection:
         Raises:
             `BackupAlreadyExistsError`: BackupEntry with name '`backup_name`' already exists
         """
+        for backup_entry in self.backup_entries:
+            if backup_entry.name == backup_name:
+                raise BackupAlreadyExistsError(f"BackupEntry with name '{backup_name}' already exists")
+
         backup_entry = BackupEntry(backup_name, backup_location, backup_date)
         self.backup_entries.append(backup_entry)
         return backup_entry

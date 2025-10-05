@@ -1,5 +1,6 @@
 from src.collection_manager import CollectionManager
 from src.data_collection import DataCollection
+from src.custom_exceptions import BackupAlreadyExistsError
 import pytest
 
 @pytest.fixture
@@ -55,3 +56,28 @@ def test_add_backup_returns(empty_collection : DataCollection):
     )
     assert backup_entry is not None
 
+def test_add_backup_exists(empty_collection: DataCollection):
+    backup_entry = empty_collection.add_backup(
+        "Backup Name", "Backup Location", "Backup Date"
+    )
+    
+    try:
+        coll = empty_collection.get_backup(backup_entry.name)
+        assert coll.name == "Backup Name"
+    except BackupAlreadyExistsError:
+        pytest.fail("Expected a BackupEntry with name 'Backup Name' but no such BackupEntry exists")
+
+@pytest.mark.parametrize("backup_name, backup_date, backup_location,", [
+    ("Backup1", "The first day ever","/home/user/backup.bak"),
+     ("//4234sftr", "asdjnvmnfmngkfnh",""),
+     ("\"TestBackup\"", "D","C"),
+])
+def  test_add_backup_values(empty_collection : DataCollection, backup_name : str, backup_date : str, backup_location : str):
+    backup_entry = empty_collection.add_backup(
+        backup_name, backup_date, backup_location
+    )
+
+    expected = (backup_name, backup_date, backup_location)
+    actual = (backup_entry.name, backup_entry.date, backup_entry.location)
+
+    assert expected == actual
