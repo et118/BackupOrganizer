@@ -36,6 +36,12 @@ class DataCollection:
             `backup_name`: The name of the new BackupEntry
             `backup_date`: The date of the BackupEntry as a string
             `backup_location`: The path where the backup is stored
+        
+        Returns:
+            A reference to the created `BackupEntry` object.
+        
+        Raises:
+            `BackupAlreadyExistsError`: BackupEntry with name '`backup_name`' already exists
         """
         backup_entry = BackupEntry(backup_name, backup_location, backup_date)
         self.backup_entries.append(backup_entry)
@@ -62,7 +68,7 @@ class DataCollection:
             `backup_name`: The name to match
         
         Returns:
-            The first `BackupEntry` that fulfills `BackupEntry.name == backup_name`
+            The `BackupEntry` that fulfills `BackupEntry.name == backup_name`
         
         Raises:
             `BackupNotFoundError`: BackupEntry with name `backup_name` not found in `backup_entries`
