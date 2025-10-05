@@ -29,7 +29,7 @@ class DataCollection:
         self.updated: bool = updated
         self.backup_entries: list[BackupEntry] = []
 
-    def add_backup(self, backup_name : str, backup_date : str, backup_location : str) -> None:
+    def add_backup(self, backup_name : str, backup_date : str, backup_location : str) -> BackupEntry:
         """Adds a BackupEntry to the end of `backup_entries`
 
         Args:
@@ -39,6 +39,7 @@ class DataCollection:
         """
         backup_entry = BackupEntry(backup_name, backup_location, backup_date)
         self.backup_entries.append(backup_entry)
+        return backup_entry
     
     def remove_backup(self, backup_entry : BackupEntry) -> None:
         """Removes `backup_entry` from `backup_entries`
