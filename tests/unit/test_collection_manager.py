@@ -1,5 +1,5 @@
 import pytest
-from custom_exceptions import CollectionNotFoundError
+from custom_exceptions import CollectionNotFoundError, CollectionAlreadyExistsError
 from src.collection_manager import CollectionManager
 import src.utility
 
@@ -61,6 +61,11 @@ def test_add_collection_values(empty_manager : CollectionManager, name : str, de
     actual = (collection.name, collection.description, collection.creation_date, collection.modification_date, collection.updated)
     
     assert expected == actual
+
+@pytest.mark.parametrize("name", ["Test Collection", "ECOLLECTION\"", ""])
+def test_add_collection_raises_collection_already_exists_error(filled_manager : CollectionManager, name):
+    with pytest.raises(CollectionAlreadyExistsError):
+        filled_manager.add_collection(name, "B", "C", "D", True)
 
 def test_overview_returns_brief_str(filled_manager : CollectionManager, monkeypatch):
     expected = []
