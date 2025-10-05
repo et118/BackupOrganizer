@@ -76,6 +76,9 @@ def test_overview_returns_brief_str(filled_manager : CollectionManager, monkeypa
     overviews = filled_manager.overview()
     assert overviews == expected
 
+def test_overview_returns_empty_list(empty_manager : CollectionManager):
+    assert empty_manager.overview() == []
+
 def test_detailed_overview_returns_full_str(filled_manager : CollectionManager, monkeypatch):
     expected = []
     for collection in filled_manager.data_collections:
@@ -85,6 +88,9 @@ def test_detailed_overview_returns_full_str(filled_manager : CollectionManager, 
 
     overviews = filled_manager.detailed_overview()
     assert overviews == expected
+
+def test_detailed_overview_returns_empty_list(empty_manager : CollectionManager):
+    assert empty_manager.detailed_overview() == []
 
 @pytest.mark.parametrize("name", ["Test Collection", "ECOLLECTION\"", ""])
 def test_info_returns_full_str(filled_manager : CollectionManager, name : str, monkeypatch):
