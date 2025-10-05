@@ -64,13 +64,13 @@ def test_add_collection_values(empty_manager : CollectionManager, name : str, de
 
 def test_overview_returns_brief_str(filled_manager : CollectionManager, monkeypatch):
     expected = []
-    # Here we use monkeypatch which overwrites a method of an object with our own
-    # so called mocking.
+    # Here we use monkeypatch which overwrites a method of an object with our own.
+    # So called mocking.
     for collection in filled_manager.data_collections:
         mocked_string = f"MOCKED_OUTPUT_FOR: {collection.name}"
         expected.append(mocked_string)
         #This lambda makes sure its a value, and not a reference, being passed along
-        #which brief_str returns
+        #which brief_str returns. Otherwise it gets removed after loop scope
         monkeypatch.setattr(collection, "brief_str", lambda val=mocked_string: val)
 
     overviews = filled_manager.overview()
@@ -85,3 +85,23 @@ def test_detailed_overview_returns_full_str(filled_manager : CollectionManager, 
 
     overviews = filled_manager.detailed_overview()
     assert overviews == expected
+
+@pytest.mark.parametrize("name", ["Test Collection", "ECOLLECTION\"", ""])
+def test_info_returns_full_str(filled_manager : CollectionManager, name : str, monkeypatch):
+    collection = filled_manager.get(name)
+    mocked_list = [f"MOCKED_OUTPUT_FOR: {collection.name}", f"MOCKED_OUTPUT_FOR: {collection.description}"]
+    monkeypatch.setattr(collection, "full_str", lambda val=mocked_list: val)
+    assert mocked_list == filled_manager.info(name)
+
+def test_info_raises_collection_not_found_error(filled_manager : CollectionManager):
+    with pytest.raises(CollectionNotFoundError):
+        filled_manager.info("CollectionThatDoesntExist")
+
+@pytest.mark.parametrize("name", ["Test Collection", "ECOLLECTION\"", ""])
+def test_get_returns_collection_with_name(filled_manager : CollectionManager, name : str):
+    collection = filled_manager.get(name)
+    assert collection.name == name
+
+def test_get_raises_collection_not_found_error(filled_manager : CollectionManager):
+    with pytest.raises(CollectionNotFoundError):
+        filled_manager.get("CollectionThatDoesntExist")
