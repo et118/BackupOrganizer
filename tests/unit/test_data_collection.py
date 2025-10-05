@@ -1,6 +1,6 @@
 from src.collection_manager import CollectionManager
 from src.data_collection import DataCollection
-from src.custom_exceptions import BackupAlreadyExistsError
+from custom_exceptions import BackupAlreadyExistsError
 import pytest
 
 @pytest.fixture
@@ -81,3 +81,9 @@ def  test_add_backup_values(empty_collection : DataCollection, backup_name : str
     actual = (backup_entry.name, backup_entry.date, backup_entry.location)
 
     assert expected == actual
+
+@pytest.mark.parametrize("name", ["Backupname", "Backupname2\"", ""])
+def test_add_backup_raises_backup_already_exists_error(empty_collection : DataCollection, name : str):
+    empty_collection.add_backup(name, "dasd", "g")
+    with pytest.raises(BackupAlreadyExistsError):
+        empty_collection.add_backup(name, "bf", "asd")
