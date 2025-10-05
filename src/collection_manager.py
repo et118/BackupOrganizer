@@ -1,5 +1,5 @@
 from data_collection import DataCollection
-from custom_exceptions import CollectionNotFoundError
+from custom_exceptions import CollectionAlreadyExistsError, CollectionNotFoundError
 
 class CollectionManager:
     """Manager class holding and managing DataCollection objects.
@@ -24,7 +24,14 @@ class CollectionManager:
         
         Returns:
             Returns a reference to the created DataCollection object.
+
+        Raises:
+            `CollectionAlreadyExistsError`: Collection with name '`name`' already exists
         """
+        for collection in self.data_collections:
+            if collection.name == name:
+                raise CollectionAlreadyExistsError(f"Collection with name '{name}' already exists")
+
         data_collection = DataCollection(name, description, creation_date, modification_date, updated)
         self.data_collections.append(data_collection)
         return data_collection
