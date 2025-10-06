@@ -95,14 +95,18 @@ def test_remove_backup(empty_collection : DataCollection):
     assert backup_entry not in empty_collection.backup_entries
 
 def test_remove_backup_raises_backup_not_found_error(empty_collection : DataCollection):
-    backup_entry = BackupEntry("BackupName", "location", "Date")
+    backup_entry = BackupEntry("BackupName", "Date", "Location")
     with pytest.raises(BackupNotFoundError):
         empty_collection.remove_backup(backup_entry)
 
 def test_get_backup_returns_with_correct_name(empty_collection : DataCollection):
-    backup_entry = empty_collection.add_backup("BackupName", "Location", "Date")
+    backup_entry = empty_collection.add_backup("BackupName", "Date", "Location")
     assert empty_collection.get_backup(backup_entry.name).name == backup_entry.name
 
 def test_get_backup_raises_backup_not_found_error(empty_collection : DataCollection):
     with pytest.raises(BackupNotFoundError):
         empty_collection.get_backup("Non Existing Backup Name")
+
+def test_brief_str_format(empty_collection : DataCollection):
+    expected = f"{empty_collection.name} | {empty_collection.modification_date} | Updated: {empty_collection.updated}"
+    assert empty_collection.brief_str() == expected
