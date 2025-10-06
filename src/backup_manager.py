@@ -1,5 +1,5 @@
 from data_collection import DataCollection
-
+from backup_entry import BackupEntry
 class BackupManager():
     """Unused Class being left for Archival purposes. 
     
@@ -9,8 +9,8 @@ class BackupManager():
 
     BackupManager.add_backup() -> DataCollection.add_backup()
     """
-    def add_backup(self, collection_object : DataCollection, backup_name : str, backup_date : str, backup_location : str) -> None:
-        """ARCHIVED! This method is no longer in use.
+    def add_backup(self, collection_object : DataCollection, backup_name : str, backup_date : str, backup_location : str) -> BackupEntry:
+        """ARCHIVED! This method is no longer in use or actively maintained.
         
         Adds a BackupEntry to the `collection_object`
 
@@ -19,5 +19,8 @@ class BackupManager():
             `backup_name`: The name of the new BackupEntry
             `backup_date`: The date of the BackupEntry as a string
             `backup_location`: The path where the backup is stored
+        
+        Raises:
+            `BackupDoesNotExistError`: When backup_name already matches a backup name in collection_object
         """
-        collection_object.add_backup(backup_name, backup_date, backup_location)
+        return collection_object.add_backup(backup_name, backup_date, backup_location)
