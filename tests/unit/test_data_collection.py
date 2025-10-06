@@ -110,3 +110,9 @@ def test_get_backup_raises_backup_not_found_error(empty_collection : DataCollect
 def test_brief_str_format(empty_collection : DataCollection):
     expected = f"{empty_collection.name} | {empty_collection.modification_date} | Updated: {empty_collection.updated}"
     assert empty_collection.brief_str() == expected
+
+def test_full_str_format(empty_collection : DataCollection):
+    expected = [empty_collection.name, empty_collection.description, 
+                empty_collection.creation_date, empty_collection.modification_date, 
+                str(empty_collection.updated)]
+    assert empty_collection.full_str() == expected
