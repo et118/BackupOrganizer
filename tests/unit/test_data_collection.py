@@ -1,6 +1,7 @@
+from src.backup_entry import BackupEntry
 from src.collection_manager import CollectionManager
 from src.data_collection import DataCollection
-from custom_exceptions import BackupAlreadyExistsError
+from custom_exceptions import BackupAlreadyExistsError, BackupNotFoundError
 import pytest
 
 @pytest.fixture
@@ -87,3 +88,13 @@ def test_add_backup_raises_backup_already_exists_error(empty_collection : DataCo
     empty_collection.add_backup(name, "dasd", "g")
     with pytest.raises(BackupAlreadyExistsError):
         empty_collection.add_backup(name, "bf", "asd")
+
+def test_remove_backup(empty_collection : DataCollection):
+    backup_entry = empty_collection.add_backup("Backup Name", "Date", "Location")
+    empty_collection.remove_backup(backup_entry)
+    assert backup_entry not in empty_collection.backup_entries
+
+def test_remove_backup_raises_backup_not_found_error(empty_collection : DataCollection):
+    backup_entry = BackupEntry("BackupName", "location", "Date")
+    with pytest.raises(BackupNotFoundError):
+        empty_collection.remove_backup(backup_entry)
