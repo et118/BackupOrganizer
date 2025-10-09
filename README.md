@@ -1,6 +1,12 @@
 # Backup Organizer
 Backup Organizer is an app made to keep track of your data and when you last did a backup.
 
+## Run (using podman or docker):
+- To run the development environment: `make run`
+- To run the tests: `make test`
+- To run the production environment: `make production`
+- To clean images: `make clean`
+
 ## Requirements: 
 ### Data Collection
 Each data collection consists of:
