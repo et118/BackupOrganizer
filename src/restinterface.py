@@ -44,7 +44,7 @@ class Collection(Resource):
         print(args)
         return {"errors": {}, "message": "TEST"}
 
-if __name__ == "__main__":
-    collection_manager = CollectionManager()
-    api.add_resource(Collection, "/Collection", resource_class_kwargs={"collection_manager": collection_manager})
+collection_manager = CollectionManager()
+api.add_resource(Collection, "/Collection", resource_class_kwargs={"collection_manager": collection_manager})
+if __name__ == "__main__": # Only intended for manual development outside container
     app.run(debug=True)

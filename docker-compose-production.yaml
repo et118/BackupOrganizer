@@ -1,0 +1,12 @@
+services:
+  app-prod:
+    image: backuporganizer_app:prod
+    build:
+      context: .
+      target: prod
+    ports:
+     - "5000:5000"
+    environment:
+     - FLASK_ENV=production
+     - FLASK_DEBUG=false
+    container_name: backuporganizer_app_prod
