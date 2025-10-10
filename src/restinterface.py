@@ -41,11 +41,11 @@ class Collection(Resource):
     def post(self):
         try:
             args = api.payload
-            if "creation_date" not in args or args["creation_date"] is None:
+            if "creation_date"     not in args or args["creation_date"]     is None:
                 args["creation_date"] = utility.get_current_datestring()
             if "modification_date" not in args or args["modification_date"] is None:
                 args["modification_date"] = utility.get_current_datestring()
-            if "updated" not in args or args["updated"] is None:
+            if "updated"           not in args or args["updated"]           is None:
                 args["updated"] = True
         
             self.collection_manager.add_collection(
@@ -62,14 +62,14 @@ class Overview(Resource):
     
     # Output for Code 200
     @api.marshal_with(api.model("OverviewSuccess", {
-        "errors": fields.Nested(api.model("NoError", {})),
-        "message": fields.String(default="Successfully Fetched Overview"),
-        "overview": fields.Raw(default='["DataCollection1 | 2009-05-12 10:11:12 | Updated: True","DataCollection2 | 2025-02-04 08:15:49 | Updated: False"]')}), code=200)
+        "errors":   fields.Nested(api.model("NoError", {})),
+        "message":  fields.String(default="Successfully Fetched Overview"),
+        "overview": fields.Raw(   default='["DataCollection1 | 2009-05-12 10:11:12 | Updated: True","DataCollection2 | 2025-02-04 08:15:49 | Updated: False"]')}), code=200)
     # Output for Code 400
     @api.marshal_with(api.model("OverviewFailure", {
-        "errors": fields.Raw(default='{"ErrorType": "ErrorMessage"}'),
-        "message": fields.String(default="Action aborted. Exception raised"),
-        "overview": fields.Raw(default="[]")}), code=400, description="Failure")
+        "errors":   fields.Raw(   default='{"ErrorType": "ErrorMessage"}'),
+        "message":  fields.String(default="Action aborted. Exception raised"),
+        "overview": fields.Raw(   default="[]")}), code=400, description="Failure")
     def get(self):
         try:
             overview = self.collection_manager.overview()
