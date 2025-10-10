@@ -2,7 +2,7 @@
 DOCKER_CMD := $(if $(shell command -v podman), podman, docker)
 
 run:
-	$(DOCKER_CMD)ghfcompose -f docker-compose.yaml -p backuporganizer_dev up
+	$(DOCKER_CMD) compose -f docker-compose.yaml -p backuporganizer_dev up
 
 test:
 	$(DOCKER_CMD) compose -f docker-compose-test.yaml -p backuporganizer_test up
