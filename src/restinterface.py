@@ -22,7 +22,7 @@ class Collection(Resource):
         "creation_date":     fields.String(required=False, description="Optional creation date. Set to current time if not set", default="1960-06-01 15:31:10"),
         "modification_date": fields.String(required=False, description="Optional modification date. Set to current time if not set", default="1960-06-01 15:31:10"),
         "updated":           fields.Boolean(required=False, description="Optional mark if the collection is up to date or not. Defualt to true", default=True)
-    }, strict=True) #This makes flask_restx automatically input validate
+    }, strict=True) #This makes flask_restx automatically input validate to enforce only these parameters
 
 
     def __init__(self, api, *args, **kwargs):
@@ -30,11 +30,13 @@ class Collection(Resource):
         self.collection_manager = kwargs["collection_manager"]
 
     @api.expect(input_model)
-    @api.marshal_with(api.model("AddCollectionSuccess", {
-        "errors": fields.Nested(api.model("NoError", {})),
+    # Output for Code 200
+    @api.marshal_with(           api.model("AddCollectionSuccess", {
+        "errors":  fields.Nested(api.model("NoError", {})),
         "message": fields.String(default="Collection Created Successfully")}), code=200)
-    @api.marshal_with(api.model("AddCollectionFailure", {
-        "errors": fields.Raw(default='{"CollectionAlreadyExistsError": "Collection with name \'name\' already exists"}'),
+    # Output for Code 400
+    @api.marshal_with(           api.model("AddCollectionFailure", {
+        "errors":  fields.Raw(   default='{"CollectionAlreadyExistsError": "Collection with name \'name\' already exists"}'),
         "message": fields.String(default="No Collection Was Created")}), code=400, description="Failure")
     def post(self):
         try:
@@ -57,11 +59,13 @@ class Overview(Resource):
     def __init__(self, api, *args, **kwargs):
         super().__init__(api, args, kwargs)
         self.collection_manager = kwargs["collection_manager"]
-
+    
+    # Output for Code 200
     @api.marshal_with(api.model("OverviewSuccess", {
         "errors": fields.Nested(api.model("NoError", {})),
         "message": fields.String(default="Successfully Fetched Overview"),
         "overview": fields.Raw(default='["DataCollection1 | 2009-05-12 10:11:12 | Updated: True","DataCollection2 | 2025-02-04 08:15:49 | Updated: False"]')}), code=200)
+    # Output for Code 400
     @api.marshal_with(api.model("OverviewFailure", {
         "errors": fields.Raw(default='{"ErrorType": "ErrorMessage"}'),
         "message": fields.String(default="Action aborted. Exception raised"),
