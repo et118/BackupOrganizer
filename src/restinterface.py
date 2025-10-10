@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restx import Api, Resource, reqparse
 from collection_manager import CollectionManager
+import utility
 
 app = Flask(__name__)
 api = Api(app, 
@@ -33,7 +34,7 @@ class Collection(Resource):
         `description`: The description of the collection. `* required`<br>
         `creation_date`: Set to current timestamp by default<br>
         `modification_date`: Set to current timestamp by default<br>
-        `modification_date`: Set to `true` by default<br>
+        `updated`: Set to `true` by default<br>
         """,
         responses={
             200: '`{"errors":{}, "message":"Success"}`', 
@@ -41,8 +42,20 @@ class Collection(Resource):
         })
     def post(self):
         args = self.parser.parse_args(strict=True)
-        print(args)
-        return {"errors": {}, "message": "TEST"}
+        if args["creation_date"] is None:
+            args["creation_date"] = utility.get_current_datestring()
+        if args["modification_date"] is None:
+            args["modification_date"] = utility.get_current_datestring()
+        if args["updated"] is None:
+            args["updated"] = True
+
+        try:
+            self.collection_manager.add_collection(
+                args["name"], args["description"], args["creation_date"], 
+                args["modification_date"], args["updated"])
+            return {"errors": {}, "message": "Collection Created Successfully"}
+        except Exception as e:
+            return {"errors": {type(e).__name__: str(e)}, "message": "No Collection Was Created"}
 
 collection_manager = CollectionManager()
 api.add_resource(Collection, "/Collection", resource_class_kwargs={"collection_manager": collection_manager})
