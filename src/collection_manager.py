@@ -5,7 +5,7 @@ class CollectionManager:
     """Manager class holding and managing DataCollection objects.
 
     Attributes:
-        `data_collections`: The list of DataCollection objects
+        `data_collections`: The list of DataCollection objects. (private)
     """
 
     def __init__(self) -> None:
@@ -76,6 +76,13 @@ class CollectionManager:
             output.append(collection.full_str())
         return output
     
+    def json_overview(self) -> dict[str,dict[str,object]]:
+        output = {}
+        for collection in self.data_collections:
+            json = collection.json()
+            output[collection.name] = json[collection.name]
+        return output
+
     def info(self, collection_name : str) -> list[str]:
         """Returns the result of DataCollection.full_str() for the first DataCollection with a matching name.
 

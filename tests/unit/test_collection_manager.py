@@ -116,3 +116,6 @@ def test_get_returns_collection_with_name(filled_manager : CollectionManager, na
 def test_get_raises_collection_not_found_error(filled_manager : CollectionManager):
     with pytest.raises(CollectionNotFoundError):
         filled_manager.get("CollectionThatDoesntExist")
+
+def test_json_overview_returns_keys(filled_manager : CollectionManager):
+    assert list(filled_manager.json_overview().keys()) == ["Test Collection", "ECOLLECTION\"", ""]
