@@ -116,3 +116,11 @@ def test_full_str_format(empty_collection : DataCollection):
                 empty_collection.creation_date, empty_collection.modification_date, 
                 str(empty_collection.updated)]
     assert empty_collection.full_str() == expected
+
+def test_json_return_value(empty_collection : DataCollection):
+    expected = {empty_collection.name : {
+        "description": empty_collection.description, 
+        "creation_date": empty_collection.creation_date, 
+        "modification_date": empty_collection.modification_date, 
+        "updated": empty_collection.updated}}
+    assert empty_collection.json() == expected
