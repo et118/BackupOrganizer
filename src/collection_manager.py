@@ -90,8 +90,10 @@ class CollectionManager:
         """
         output = {}
         for collection in self.data_collections:
-            json = collection.json()
-            output[collection.name] = json[collection.name]
+            json = collection.full_json()
+            name = json["name"]
+            del json["name"]
+            output[name] = json
         return output
 
     def info(self, collection_name : str) -> list[str]:

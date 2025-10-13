@@ -157,4 +157,4 @@ class DataCollection:
         data["creation_date"] = self.creation_date
         data["modification_date"] = self.modification_date
         data["updated"] = self.updated
-        return {self.name : data}
+        return data
