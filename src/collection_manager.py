@@ -63,6 +63,7 @@ class CollectionManager:
 
         Raises:
             `InvalidCollectionEditError`: Key '`key`' and associated value is not a valid edit
+            `CollectionNotFoundError`: Collection with name '`collection_name`' not found
         """
         collection = self.get(collection_name)
         for key in updated_json:
@@ -77,6 +78,14 @@ class CollectionManager:
             else:
                 raise InvalidCollectionEditError(f"Key '{key}' and associated value is not a valid edit")
 
+    def delete_collection(self, collection_name : str) -> None:
+        """Deletes the DataCollection with matching name to `collection_name`
+        
+        Raises:
+            `CollectionNotFoundError`: Collection with name '`collection_name`' not found
+        """
+        collection = self.get(collection_name)
+        self.data_collections.remove(collection)
 
     def overview(self) -> list[str]:
         """Returns a list of strings containing a small overview for each of the DataCollection objects

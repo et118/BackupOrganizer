@@ -158,3 +158,23 @@ def test_edit_collection_random(filled_manager: CollectionManager):
     start_values["modification_date"] = "Yesterdayy"
     start_values["updated"] = True
     assert start_values == filled_manager.get("BBB").full_json()
+
+@pytest.mark.parametrize("names,correct", [
+    (["Test Collection"], 2),
+    ([], 3),
+    (["Test Collection", "ECOLLECTION\""], 1),
+    (["Test Collection", "ECOLLECTION\"", ""], 0)
+])
+def test_delete_collection_amount(filled_manager: CollectionManager, names : str, correct : int):
+    for name in names:
+        filled_manager.delete_collection(name)
+    assert len(filled_manager.overview()) == correct
+
+def test_delete_collection_raises_collection_not_found_errror(filled_manager : CollectionManager):
+    with pytest.raises(CollectionNotFoundError):
+        filled_manager.delete_collection("Does Not Exist Collection Name")
+
+def test_delete_collection_correct_target(filled_manager: CollectionManager):
+    filled_manager.delete_collection("ECOLLECTION\"")
+    with pytest.raises(CollectionNotFoundError):
+        filled_manager.get("ECOLLECTION\"")
