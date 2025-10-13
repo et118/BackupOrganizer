@@ -280,6 +280,35 @@ class Unbackup(Resource):
         except Exception as e:
             abort(400, errors={type(e).__name__: str(e)}, message="No Deletion Was Made")
 
+class Delete(Resource):
+    def __init__(self, api, *args, **kwargs):
+        super().__init__(api, args, kwargs)
+        self.collection_manager = kwargs["collection_manager"]
+    
+    @api.marshal_with(api.model("DeleteSuccess", {
+        "errors":   fields.Nested(api.model("NoError", {})),
+        "message":  fields.String(default="Successfully Deleted DataCollection")}), code=200)
+    # Output for Code 400
+    @api.marshal_with(api.model("DeleteFailure", {
+        "errors":   fields.Raw(   default='{"MissingParameter": "Parameter \"name\" is required"}'),
+        "message":  fields.String(default="Action aborted. Exception raised")}), code=400, description="Failure")
+    @api.doc(params={"name": {
+        "description": "The name of the DataCollection to be deleted",
+        "default": "Unique Name",
+        "required": True
+        }
+    })
+    def delete(self):
+        name = request.args.get("name", type=str)
+        if name is None:
+            abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised")
+            return
+        try:
+            self.collection_manager.delete_collection(name)
+            return {"errors":{}, "message": "Successfully Deleted DataCollection"}
+        except Exception as e:
+            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
+
 collection_manager = CollectionManager()
 api.add_resource(Collection, "/Collection", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Overview, "/Overview", resource_class_kwargs={"collection_manager": collection_manager})
@@ -289,6 +318,7 @@ api.add_resource(Backup, "/Backup", resource_class_kwargs={"collection_manager":
 api.add_resource(Search, "/Search", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Edit, "/Edit", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Unbackup, "/Unbackup", resource_class_kwargs={"collection_manager": collection_manager})
+api.add_resource(Delete, "/Delete", resource_class_kwargs={"collection_manager": collection_manager})
 
 if __name__ == "__main__": # Only intended for manual development outside container
     app.run(debug=True)
