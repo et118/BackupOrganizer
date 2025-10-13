@@ -190,7 +190,7 @@ class CollectionManager:
         
         Args:
             `search_string`: The substring that needs to be included in DataCollection.name
-            (optional) `case_sensitive: Whether or not the search_string should be case sensitive. Default: True
+            (optional) `case_sensitive`: Whether or not the search_string should be case sensitive. Default: True
 
         Returns:
             Array with `DataCollection` objects matching the search_string

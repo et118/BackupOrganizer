@@ -123,9 +123,10 @@ class Info(Resource):
         name = request.args.get("name")
         if name is None:
             abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised")
+            return
         try:
             data_collection = collection_manager.get(name)
-            info = data_collection.json()
+            info = data_collection.full_json()
             return {"errors":{}, "message": "Successfully Fetched Info", "info": info}
         except Exception as e:
             abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
@@ -164,12 +165,68 @@ class Backup(Resource):
         except Exception as e:
             abort(400, errors={type(e).__name__: str(e)}, message="No Backup Was Created")
 
+class Search(Resource):
+    def __init__(self, api, *args, **kwargs):
+        super().__init__(api, args, kwargs)
+        self.collection_manager = kwargs["collection_manager"]
+    
+    @api.marshal_with(api.model("SearchSuccess", {
+        "errors":   fields.Nested(api.model("NoError", {})),
+        "message":  fields.String(default="Successfully Fetched Search Results"),
+        "search": fields.Raw(   default={"DataCollection1": {"description": "The best Collection", "creation_date": "Today", "modification_date": "13:58", "updated": True}})}), code=200)
+    # Output for Code 400
+    @api.marshal_with(api.model("SearchFailure", {
+        "errors":   fields.Raw(   default='{"MissingParameter": "Parameter \"name\" is required"}'),
+        "message":  fields.String(default="Action aborted. Exception raised"),
+        "search": fields.Raw(   default="{}")}), code=400, description="Failure")
+    @api.doc(params={"name": {
+        "description": "The searchterm to match the DataCollections name with",
+        "default": "Unique Name",
+        "required": True
+        },
+        "case_sensitive": {
+            "description": "Whether or not 'name' is case sensitive when searching. Default is true",
+            "default": True,
+            "required": False
+        }
+    })
+    def get(self):
+        name = request.args.get("name", type=str)
+        case_sensitive = request.args.get("case_sensitive")
+        
+        if name is None:
+            abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised")
+            return
+        if case_sensitive is None:
+            case_sensitive = True
+        else:
+            if case_sensitive.lower() == "true":
+                case_sensitive = True
+            elif case_sensitive.lower() == "false":
+                case_sensitive = False
+            else:
+                abort(400, errors={"InvalidParameter": "Parameter \"case_sensitive\" is not a valid value. Only (true/false) is valid input"}, message="Action aborted. Exception raised")
+                return
+        try:
+            search_result = collection_manager.search(name, case_sensitive=case_sensitive)
+            output = {}
+            for collection in search_result:
+                json = collection.full_json()
+                name = json["name"]
+                del json["name"]
+                output[name] = json
+
+            return {"errors":{}, "message": "Successfully Fetched Search Results", "search": output}
+        except Exception as e:
+            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
+
 collection_manager = CollectionManager()
 api.add_resource(Collection, "/Collection", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Overview, "/Overview", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(List, "/List", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Info, "/Info", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Backup, "/Backup", resource_class_kwargs={"collection_manager": collection_manager})
+api.add_resource(Search, "/Search", resource_class_kwargs={"collection_manager": collection_manager})
 
 if __name__ == "__main__": # Only intended for manual development outside container
     app.run(debug=True)
