@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restx import Api, Resource, fields, abort
 from collection_manager import CollectionManager
 import utility
@@ -83,12 +83,12 @@ class List(Resource):
         self.collection_manager = kwargs["collection_manager"]
     
     # Output for Code 200
-    @api.marshal_with(api.model("OverviewSuccess", {
+    @api.marshal_with(api.model("ListSuccess", {
         "errors":   fields.Nested(api.model("NoError", {})),
         "message":  fields.String(default="Successfully Fetched Overview"),
         "overview": fields.Raw(   default={"DataCollection1": {"description": "The best Collection", "creation_date": "Today", "modification_date": "13:58", "updated": True},"DataCollection2": {"description": "The next best collection", "creation_date": "1960", "modification_date": "2080 1 January", "updated": False}})}), code=200)
     # Output for Code 400
-    @api.marshal_with(api.model("OverviewFailure", {
+    @api.marshal_with(api.model("ListFailure", {
         "errors":   fields.Raw(   default='{"ErrorType": "ErrorMessage"}'),
         "message":  fields.String(default="Action aborted. Exception raised"),
         "overview": fields.Raw(   default="{}")}), code=400, description="Failure")
@@ -99,10 +99,36 @@ class List(Resource):
         except Exception as e:
             abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
 
+class Info(Resource):
+    def __init__(self, api, *args, **kwargs):
+        super().__init__(api, args, kwargs)
+        self.collection_manager = kwargs["collection_manager"]
+    
+    @api.marshal_with(api.model("InfoSuccess", {
+        "errors":   fields.Nested(api.model("NoError", {})),
+        "message":  fields.String(default="Successfully Fetched Info"),
+        "info": fields.Raw(   default={"DataCollection1": {"description": "The best Collection", "creation_date": "Today", "modification_date": "13:58", "updated": True}})}), code=200)
+    # Output for Code 400
+    @api.marshal_with(api.model("InfoFailure", {
+        "errors":   fields.Raw(   default='{"MissingParameter": "Parameter \"name\" is required"}'),
+        "message":  fields.String(default="Action aborted. Exception raised"),
+        "info": fields.Raw(   default="{}")}), code=400, description="Failure")
+    def get(self):
+        name = request.args.get("name")
+        if name is None:
+            abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised")
+        try:
+            data_collection = collection_manager.get(name)
+            info = data_collection.json()
+            return {"errors":{}, "message": "Successfully Fetched Info", "info": info}
+        except Exception as e:
+            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
+
 collection_manager = CollectionManager()
 api.add_resource(Collection, "/Collection", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Overview, "/Overview", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(List, "/List", resource_class_kwargs={"collection_manager": collection_manager})
+api.add_resource(Info, "/Info", resource_class_kwargs={"collection_manager": collection_manager})
 
 if __name__ == "__main__": # Only intended for manual development outside container
     app.run(debug=True)
