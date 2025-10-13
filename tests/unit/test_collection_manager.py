@@ -119,3 +119,27 @@ def test_get_raises_collection_not_found_error(filled_manager : CollectionManage
 
 def test_json_overview_returns_keys(filled_manager : CollectionManager):
     assert list(filled_manager.json_overview().keys()) == ["Test Collection", "ECOLLECTION\"", ""]
+
+@pytest.mark.parametrize("search,sensitive,correct", [
+    ("", True, 3),
+    ("test", True, 0),
+    ("test", False, 1),
+    ("COLLECTION", True, 1),
+    ("COLLECTION", False, 2)
+])
+def test_search_returns_correct_amount(filled_manager : CollectionManager, search : str, sensitive : bool, correct : int):
+    result = filled_manager.search(search, case_sensitive=sensitive)
+    assert len(result) == correct
+
+@pytest.mark.parametrize("search,sensitive,correct_names", [
+    ("", True, ["Test Collection", "ECOLLECTION\"", ""]),
+    ("test", False, ["Test Collection"]),
+    ("COLLECTION", True, ["ECOLLECTION\""]),
+    ("COLLECTION", False, ["Test Collection", "ECOLLECTION\""])
+])
+def test_search_returns_correct_names(filled_manager: CollectionManager, search : str, sensitive : bool, correct_names):
+    result = filled_manager.search(search, case_sensitive=sensitive)
+    actual = []
+    for collection in result:
+        actual.append(collection.name)
+    assert actual == correct_names

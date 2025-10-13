@@ -133,3 +133,25 @@ class CollectionManager:
             if collection.name == collection_name:
                 return collection
         raise CollectionNotFoundError(f"Collection with name '{collection_name}' not found")
+
+    def search(self, search_string : str, case_sensitive : bool = True) -> list[DataCollection]:
+        """Returns a list of DataCollection with `search_string` in their name. CASE SENSITIVE by default
+        
+        Args:
+            `search_string`: The substring that needs to be included in DataCollection.name
+            (optional) `case_sensitive: Whether or not the search_string should be case sensitive. Default: True
+
+        Returns:
+            Array with `DataCollection` objects matching the search_string
+        
+        """
+        output = []
+        for collection in self.data_collections:
+            name = collection.name
+            if not case_sensitive:
+                name = collection.name.lower()
+                search_string = search_string.lower()
+
+            if search_string in name:
+                output.append(collection)
+        return output
