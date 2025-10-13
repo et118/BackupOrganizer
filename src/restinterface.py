@@ -21,7 +21,7 @@ class Collection(Resource):
         "description":       fields.String(required=True, description="The description of the collection", default="The description of the collection"),
         "creation_date":     fields.String(required=False, description="Optional creation date. Set to current time if not set", default="1960-06-01 15:31:10"),
         "modification_date": fields.String(required=False, description="Optional modification date. Set to current time if not set", default="1960-06-01 15:31:10"),
-        "updated":           fields.Boolean(required=False, description="Optional mark if the collection is up to date or not. Defualt to true", default=True)
+        "updated":           fields.Boolean(required=False, description="Optional mark if the collection is up to date or not. Default to true", default=True)
     }, strict=True) #This makes flask_restx automatically input validate to enforce only these parameters
 
 
@@ -113,6 +113,12 @@ class Info(Resource):
         "errors":   fields.Raw(   default='{"MissingParameter": "Parameter \"name\" is required"}'),
         "message":  fields.String(default="Action aborted. Exception raised"),
         "info": fields.Raw(   default="{}")}), code=400, description="Failure")
+    @api.doc(params={"name": {
+        "description": "The name of the DataCollection to get info from",
+        "default": "Unique Name",
+        "required": True
+    }
+    })
     def get(self):
         name = request.args.get("name")
         if name is None:
@@ -124,11 +130,46 @@ class Info(Resource):
         except Exception as e:
             abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
 
+class Backup(Resource):
+    input_model = api.model("AddBackup", {
+        "collection_name": fields.String(required=True, description="The unique name of the collection which the backup will be added to", default="Unique Name"),
+        "backup_name":     fields.String(required=True, description="The unique name of the backup to be created", default="Unique Name"),
+        "backup_location": fields.String(required=True, description="Location where the backup is stored", default="/home/user/backup.bak"),
+        "backup_date":     fields.String(required=False, description="Optional backup date. Set to current time if not set", default="1960-06-01 15:31:10")
+        
+    }, strict=True) #This makes flask_restx automatically input validate to enforce only these parameters
+
+    def __init__(self, api, *args, **kwargs):
+        super().__init__(api, args, kwargs)
+        self.collection_manager = kwargs["collection_manager"]
+
+    @api.expect(input_model)
+    # Output for Code 200
+    @api.marshal_with(           api.model("AddBackupSuccess", {
+        "errors":  fields.Nested(api.model("NoError", {})),
+        "message": fields.String(default="Backup Created Successfully")}), code=200)
+    # Output for Code 400
+    @api.marshal_with(           api.model("AddBackupFailure", {
+        "errors":  fields.Raw(   default='{"BackupAlreadyExistsError": "BackupEntry with name \'backup_name\' already exists"}'),
+        "message": fields.String(default="No Backup Was Created")}), code=400, description="Failure")
+    def post(self):
+        try:
+            args = api.payload
+            if "backup_date" not in args or args["backup_date"] is None:
+                args["backup_date"] = utility.get_current_datestring()
+            
+            data_collection = self.collection_manager.get(args["collection_name"])
+            data_collection.add_backup(args["backup_name"], args["backup_date"], args["backup_location"])
+            return {"errors": {}, "message": "Backup Created Successfully"}, 200
+        except Exception as e:
+            abort(400, errors={type(e).__name__: str(e)}, message="No Backup Was Created")
+
 collection_manager = CollectionManager()
 api.add_resource(Collection, "/Collection", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Overview, "/Overview", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(List, "/List", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Info, "/Info", resource_class_kwargs={"collection_manager": collection_manager})
+api.add_resource(Backup, "/Backup", resource_class_kwargs={"collection_manager": collection_manager})
 
 if __name__ == "__main__": # Only intended for manual development outside container
     app.run(debug=True)
