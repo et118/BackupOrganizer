@@ -1,6 +1,9 @@
 # Backup Organizer
 Backup Organizer is an app made to keep track of your data and when you last did a backup.
 
+## TODO:
+maybe modification_date should be set automatically and not be user edited?
+
 ## Run (using podman or docker):
 Make sure to have podman & podman-compose installed, or docker with docker-compose
 

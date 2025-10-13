@@ -220,6 +220,39 @@ class Search(Resource):
         except Exception as e:
             abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
 
+class Edit(Resource):
+    input_model = api.model("AddBackup", {
+        "collection_name":       fields.String(required=True, description="The unique name of the collection to be edited", default="Unique Name"),
+        "name":                  fields.String(required=False, description="The new unique name of the collection", default="New Unique Name"),
+        "description":           fields.String(required=False, description="The new description of the collection", default="New Description"),
+        "modification_date":     fields.String(required=False, description="The new modification date of the collection", default="New Date"),
+        "updated":               fields.Boolean(required=False, description="Whether or not the collection is up to date", default=True)
+    }, strict=True)
+
+    def __init__(self, api, *args, **kwargs):
+        super().__init__(api, args, kwargs)
+        self.collection_manager = kwargs["collection_manager"]
+
+    @api.expect(input_model)
+    # Output for Code 200
+    @api.marshal_with(           api.model("EditSuccess", {
+        "errors":  fields.Nested(api.model("NoError", {})),
+        "message": fields.String(default="Edit Was Successfull")}), code=200)
+    # Output for Code 400
+    @api.marshal_with(           api.model("EditFailure", {
+        "errors":  fields.Raw(   default='{"InvalidCollectionEditError": "Key \'key\' and associated value is not a valid edit"}'),
+        "message": fields.String(default="No edit was made")}), code=400, description="Failure")
+    def post(self):
+        try:
+            args = api.payload
+            for key, value in args.items():
+                if key != "collection_name":
+                    self.collection_manager.edit_collection(args["collection_name"], {key: value})
+            return {"errors": {}, "message": "Edit Was Successfull"}, 200
+        except Exception as e:
+            abort(400, errors={type(e).__name__: str(e)}, message="No edit was made")
+
+
 collection_manager = CollectionManager()
 api.add_resource(Collection, "/Collection", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Overview, "/Overview", resource_class_kwargs={"collection_manager": collection_manager})
@@ -227,6 +260,7 @@ api.add_resource(List, "/List", resource_class_kwargs={"collection_manager": col
 api.add_resource(Info, "/Info", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Backup, "/Backup", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Search, "/Search", resource_class_kwargs={"collection_manager": collection_manager})
+api.add_resource(Edit, "/Edit", resource_class_kwargs={"collection_manager": collection_manager})
 
 if __name__ == "__main__": # Only intended for manual development outside container
     app.run(debug=True)
