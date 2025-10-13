@@ -132,27 +132,27 @@ class DataCollection:
 
         return string_list
     
-    def json(self) -> dict[str,dict[str,object]]:
-        """Returns a json object containing the following attributes in this format:
+    def full_json(self) -> dict[str,object]:
+        """Returns a json object containing the following attributes:
         
         Returns:
             ```python
             {
-                "{name}": {
-                    "description": "{description}",
-                    "creation_date": "{creation_date}",
-                    "modification_date": "{modification_date}",
-                    "updated": {updated}
-                }
+                "name": "{name}",
+                "description": "{description}",
+                "creation_date": "{creation_date}",
+                "modification_date": "{modification_date}",
+                "updated": {updated}
             }
             ```
 
             Example return value:
             ```python
-            {"DataCollection1": {"description": "The best Collection", "creation_date": "Today", "modification_date": "13:58", "updated": True}}
+            {"name": "DataCollection1", "description": "The best Collection", "creation_date": "Today", "modification_date": "13:58", "updated": True}
             ```
         """
         data = {}
+        data["name"] = self.name
         data["description"] = self.description
         data["creation_date"] = self.creation_date
         data["modification_date"] = self.modification_date
