@@ -77,11 +77,32 @@ class Overview(Resource):
         except Exception as e:
             abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
 
-
+class List(Resource):
+    def __init__(self, api, *args, **kwargs):
+        super().__init__(api, args, kwargs)
+        self.collection_manager = kwargs["collection_manager"]
+    
+    # Output for Code 200
+    @api.marshal_with(api.model("OverviewSuccess", {
+        "errors":   fields.Nested(api.model("NoError", {})),
+        "message":  fields.String(default="Successfully Fetched Overview"),
+        "overview": fields.Raw(   default={"DataCollection1": {"description": "The best Collection", "creation_date": "Today", "modification_date": "13:58", "updated": True},"DataCollection2": {"description": "The next best collection", "creation_date": "1960", "modification_date": "2080 1 January", "updated": False}})}), code=200)
+    # Output for Code 400
+    @api.marshal_with(api.model("OverviewFailure", {
+        "errors":   fields.Raw(   default='{"ErrorType": "ErrorMessage"}'),
+        "message":  fields.String(default="Action aborted. Exception raised"),
+        "overview": fields.Raw(   default="{}")}), code=400, description="Failure")
+    def get(self):
+        try:
+            overview = self.collection_manager.json_overview()
+            return {"errors":{}, "message": "Successfully Fetched a Detailed Overview", "overview": overview}
+        except Exception as e:
+            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
 
 collection_manager = CollectionManager()
 api.add_resource(Collection, "/Collection", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Overview, "/Overview", resource_class_kwargs={"collection_manager": collection_manager})
+api.add_resource(List, "/List", resource_class_kwargs={"collection_manager": collection_manager})
 
 if __name__ == "__main__": # Only intended for manual development outside container
     app.run(debug=True)

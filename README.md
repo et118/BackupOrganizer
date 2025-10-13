@@ -2,6 +2,8 @@
 Backup Organizer is an app made to keep track of your data and when you last did a backup.
 
 ## Run (using podman or docker):
+Make sure to have podman & podman-compose installed, or docker with docker-compose
+
 - To run the development environment: `make run`
 - To run the tests: `make test`
 - To run the production environment: `make production`

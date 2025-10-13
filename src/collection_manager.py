@@ -77,6 +77,17 @@ class CollectionManager:
         return output
     
     def json_overview(self) -> dict[str,dict[str,object]]:
+        """Returns a dictionary containing all DataCollection names mapped to their .json() value
+        
+        Returns:
+            Example return value:
+            ```python
+            {
+                "DataCollection1": {"description": "The best Collection", "creation_date": "Today", "modification_date": "13:58", "updated": True},
+                "DataCollection2": {"description": "The next best collection", "creation_date": "1960", "modification_date": "2080 1 January", "updated": False}
+            }
+            ```
+        """
         output = {}
         for collection in self.data_collections:
             json = collection.json()
