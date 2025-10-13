@@ -3,7 +3,9 @@ from flask_restx import Api, Resource, fields, abort
 from collection_manager import CollectionManager
 import utility
 
-app = Flask(__name__)
+app = Flask(__name__,
+            static_url_path="",
+            static_folder="./static")
 app.config["RESTX_MASK_SWAGGER"] = False
 api = Api(app, 
           title="Backup Organizer REST API",
@@ -13,7 +15,7 @@ api = Api(app,
 
 @app.route("/")
 def main():
-    return "To Be Added Frontend", 200
+    return app.send_static_file("index.html")
 
 class Collection(Resource):
     input_model = api.model("AddCollection", {

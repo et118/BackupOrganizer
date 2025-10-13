@@ -61,7 +61,7 @@ class DataCollection:
             `BackupNotFoundError`: BackupEntry with name `backup_entry.name` not found in `backup_entries`
         """
         if backup_entry not in self.backup_entries:
-            raise BackupNotFoundError(f"BackupEntry  not found in `backup_entries`")
+            raise BackupNotFoundError(f"BackupEntry {backup_entry.name} not found in `backup_entries`")
         else:
             self.backup_entries.remove(backup_entry)
     
