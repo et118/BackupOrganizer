@@ -9,3 +9,6 @@ class BackupNotFoundError(Exception):
 
 class BackupAlreadyExistsError(Exception):
     """Raised when trying to add a BackupEntry with the same name as another"""
+
+class InvalidCollectionEditError(Exception):
+    """Raised when trying to modify a DataCollection with a wrong key, value or type"""

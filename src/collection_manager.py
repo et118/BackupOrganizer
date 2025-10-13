@@ -1,5 +1,5 @@
 from data_collection import DataCollection
-from custom_exceptions import CollectionAlreadyExistsError, CollectionNotFoundError
+from custom_exceptions import CollectionAlreadyExistsError, CollectionNotFoundError, InvalidCollectionEditError
 
 class CollectionManager:
     """Manager class holding and managing DataCollection objects.
@@ -36,6 +36,48 @@ class CollectionManager:
         self.data_collections.append(data_collection)
         return data_collection
     
+    def edit_collection(self, collection_name : str, updated_json : dict) -> None:
+        """Edits fields inside DataCollection with matching name to their corresponding keys in `updated_json`
+
+        Example of all valid keys in an `updated_json` argument:
+        ```python
+        {
+            "name": "New Name",
+            "description": "New Description",
+            "modification_date": "New Modification Date",
+            "updated": True
+        }
+        ```
+        You don't need to update all fields. You can use individual keys as well:
+        ```python
+        {
+            "updated": False,
+            "description": "New Description"
+        }
+        ```
+
+
+        Args:
+            collection_name: The naem of the DataCollection to edit
+            updated_json: Json object (in the form of a dict in python) with key/value pairs of fields to edit
+
+        Raises:
+            `InvalidCollectionEditError`: Key '`key`' and associated value is not a valid edit
+        """
+        collection = self.get(collection_name)
+        for key in updated_json:
+            if key == "name" and isinstance(updated_json["name"], str):
+                collection.name = updated_json["name"]
+            elif key == "description" and isinstance(updated_json["description"], str):
+                collection.description = updated_json["description"]
+            elif key == "modification_date" and isinstance(updated_json["modification_date"], str):
+                collection.modification_date = updated_json["modification_date"]
+            elif key == "updated" and isinstance(updated_json["updated"], bool):
+                collection.updated = updated_json["updated"]
+            else:
+                raise InvalidCollectionEditError(f"Key '{key}' and associated value is not a valid edit")
+
+
     def overview(self) -> list[str]:
         """Returns a list of strings containing a small overview for each of the DataCollection objects
         in data_collections.

@@ -143,3 +143,18 @@ def test_search_returns_correct_names(filled_manager: CollectionManager, search 
     for collection in result:
         actual.append(collection.name)
     assert actual == correct_names
+
+def test_edit_collection_random(filled_manager: CollectionManager):
+    start_values = filled_manager.get("Test Collection").full_json()
+    filled_manager.edit_collection("Test Collection", {"modification_date": "Yesterdayy"})
+    filled_manager.edit_collection("Test Collection", {"updated": True})
+    filled_manager.edit_collection("Test Collection", {"name": "Test Collection 2"})
+    filled_manager.edit_collection("Test Collection 2", {"name": "AAAAAAAAAAAAAA"})
+    filled_manager.edit_collection("AAAAAAAAAAAAAA", {"description": "New Description"})
+    filled_manager.edit_collection("AAAAAAAAAAAAAA", {"name": "BBB"})
+    
+    start_values["name"] = "BBB"
+    start_values["description"] = "New Description"
+    start_values["modification_date"] = "Yesterdayy"
+    start_values["updated"] = True
+    assert start_values == filled_manager.get("BBB").full_json()
