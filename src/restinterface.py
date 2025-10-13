@@ -221,7 +221,7 @@ class Search(Resource):
             abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
 
 class Edit(Resource):
-    input_model = api.model("AddBackup", {
+    input_model = api.model("EditCollection", {
         "collection_name":       fields.String(required=True, description="The unique name of the collection to be edited", default="Unique Name"),
         "name":                  fields.String(required=False, description="The new unique name of the collection", default="New Unique Name"),
         "description":           fields.String(required=False, description="The new description of the collection", default="New Description"),
@@ -241,7 +241,7 @@ class Edit(Resource):
     # Output for Code 400
     @api.marshal_with(           api.model("EditFailure", {
         "errors":  fields.Raw(   default='{"InvalidCollectionEditError": "Key \'key\' and associated value is not a valid edit"}'),
-        "message": fields.String(default="No edit was made")}), code=400, description="Failure")
+        "message": fields.String(default="No Edit Was Made")}), code=400, description="Failure")
     def post(self):
         try:
             args = api.payload
@@ -250,8 +250,35 @@ class Edit(Resource):
                     self.collection_manager.edit_collection(args["collection_name"], {key: value})
             return {"errors": {}, "message": "Edit Was Successfull"}, 200
         except Exception as e:
-            abort(400, errors={type(e).__name__: str(e)}, message="No edit was made")
+            abort(400, errors={type(e).__name__: str(e)}, message="No Edit Was Made")
 
+class Unbackup(Resource):
+    input_model = api.model("UnBackup", {
+        "collection_name":       fields.String(required=True, description="The unique name of the collection holding the backup to be deleted", default="Unique Name"),
+        "backup_name":           fields.String(required=True, description="The unique name of the backup to delete", default="Unique Name")
+    }, strict=True)
+
+    def __init__(self, api, *args, **kwargs):
+        super().__init__(api, args, kwargs)
+        self.collection_manager = kwargs["collection_manager"]
+
+    @api.expect(input_model)
+    # Output for Code 200
+    @api.marshal_with(           api.model("UnBackupSuccess", {
+        "errors":  fields.Nested(api.model("NoError", {})),
+        "message": fields.String(default="Deletion Was Successfull")}), code=200)
+    # Output for Code 400
+    @api.marshal_with(           api.model("UnBackupFailure", {
+        "errors":  fields.Raw(   default='{"BackupNotFoundError": "BackupEntry with name \'backup_name\' not found in `backup_entries`'),
+        "message": fields.String(default="No Deletion Was Made")}), code=400, description="Failure")
+    def post(self):
+        try:
+            args = api.payload
+            collection = self.collection_manager.get(args["collection_name"])
+            collection.remove_backup(collection.get_backup(args["backup_name"]))
+            return {"errors": {}, "message": "Deletion Was Successfull"}, 200
+        except Exception as e:
+            abort(400, errors={type(e).__name__: str(e)}, message="No Deletion Was Made")
 
 collection_manager = CollectionManager()
 api.add_resource(Collection, "/Collection", resource_class_kwargs={"collection_manager": collection_manager})
@@ -261,6 +288,7 @@ api.add_resource(Info, "/Info", resource_class_kwargs={"collection_manager": col
 api.add_resource(Backup, "/Backup", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Search, "/Search", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Edit, "/Edit", resource_class_kwargs={"collection_manager": collection_manager})
+api.add_resource(Unbackup, "/Unbackup", resource_class_kwargs={"collection_manager": collection_manager})
 
 if __name__ == "__main__": # Only intended for manual development outside container
     app.run(debug=True)
