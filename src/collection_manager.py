@@ -45,6 +45,7 @@ class CollectionManager:
             "name": "New Name",
             "description": "New Description",
             "modification_date": "New Modification Date",
+            "creation_date": "New Creation Date",
             "updated": True
         }
         ```
@@ -71,6 +72,8 @@ class CollectionManager:
                 collection.name = updated_json["name"]
             elif key == "description" and isinstance(updated_json["description"], str):
                 collection.description = updated_json["description"]
+            elif key == "creation_date" and isinstance(updated_json["creation_date"], str):
+                collection.creation_date = updated_json["creation_date"]
             elif key == "modification_date" and isinstance(updated_json["modification_date"], str):
                 collection.modification_date = updated_json["modification_date"]
             elif key == "updated" and isinstance(updated_json["updated"], bool):

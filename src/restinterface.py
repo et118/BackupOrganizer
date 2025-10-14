@@ -109,7 +109,7 @@ class Info(Resource):
     @api.marshal_with(api.model("InfoSuccess", {
         "errors":   fields.Nested(api.model("NoError", {})),
         "message":  fields.String(default="Successfully Fetched Info"),
-        "info": fields.Raw(   default={"DataCollection1": {"description": "The best Collection", "creation_date": "Today", "modification_date": "13:58", "updated": True}})}), code=200)
+        "info": fields.Raw(   default={"name": "DataCollection1", "description": "The best Collection", "creation_date": "Today", "modification_date": "13:58", "updated": True})}), code=200)
     # Output for Code 400
     @api.marshal_with(api.model("InfoFailure", {
         "errors":   fields.Raw(   default='{"MissingParameter": "Parameter \"name\" is required"}'),
@@ -227,6 +227,7 @@ class Edit(Resource):
         "collection_name":       fields.String(required=True, description="The unique name of the collection to be edited", default="Unique Name"),
         "name":                  fields.String(required=False, description="The new unique name of the collection", default="New Unique Name"),
         "description":           fields.String(required=False, description="The new description of the collection", default="New Description"),
+        "creation_date":         fields.String(required=False, description="The new creation date of the collection", default="New Date"),
         "modification_date":     fields.String(required=False, description="The new modification date of the collection", default="New Date"),
         "updated":               fields.Boolean(required=False, description="Whether or not the collection is up to date", default=True)
     }, strict=True)
