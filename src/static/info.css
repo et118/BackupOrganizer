@@ -1,0 +1,54 @@
+header > a{
+    text-decoration: none;
+    color:black;
+}
+
+header > a > h1 {
+    margin:0;   
+}
+
+#infodiv {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border:5px solid black;
+    overflow: auto;
+    max-height: 50%;
+}
+
+#infodiv > table, input, textarea {
+    width:100%;
+}
+
+#updated {
+    appearance: none;
+    border: 1px solid black;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: red;
+    cursor: pointer;
+    margin:0;
+
+}
+
+#updated:checked {
+    background-color: rgb(94, 239, 94);
+}
+
+#save {
+    padding-top:10px;
+    padding-bottom: 10px;
+    margin-top:20px;
+    cursor: pointer;
+}
+
+#delete {
+    background-color: red;
+    padding-top:10px;
+    padding-bottom: 10px;
+    cursor: pointer;
+    font-weight: bolder;
+    color:white;
+}
