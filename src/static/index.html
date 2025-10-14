@@ -9,7 +9,6 @@
         </header>
         <main>
             <div id="searchdiv">
-                <!-- https://stackoverflow.com/questions/18309059/drop-down-menu-text-field-in-one -->
                 <input list="searchresults" type="search" id="searchinput" placeholder="Search">
                 <ul id="suggestions"></ul>
                 <script>
@@ -19,23 +18,35 @@
                             const result = await response.json();
                             Object.entries(result["search"]).forEach(([name, body]) => {
                                 option = document.createElement("li");
-                                option.innerHTML = "<a href=\"/info.html?name=" + name + "\">" + name + " | " + body.modification_date + "</a>";
+                                atag = document.createElement("a");
+                                atag.href = "/info.html?name=" + name;
+                                atag.innerText = name + " | " + body.modification_date;
+                                option.appendChild(atag);
                                 document.getElementById("suggestions").appendChild(option);
                             });
                         }
                     }
-                    document.getElementById("searchinput").addEventListener("input", async function(event) {
-                        const datalist = document.getElementById("suggestions");
-                        Array.from(datalist.children).forEach(option => {
+                    function clearSuggestions() {
+                        const suggestions = document.getElementById("suggestions");
+                        Array.from(suggestions.children).forEach(option => {
                             if (option.value !== "No Results") {
                                 option.remove();
                             }
                         });
+                    }
+
+                    document.getElementById("searchinput").addEventListener("input", async function(event) {
+                        clearSuggestions();
                         const searchterm = event.target.value;
                         if (searchterm.length === 0) return;
 
                         await search(event.target.value);
                     });
+
+                    document.getElementById("searchinput").addEventListener("blur", function(event) {
+                        setTimeout(clearSuggestions, 100); /*Because otherwise we cant click in time*/
+                    });
+
                 </script>
             </div>
             <div id="overviewdiv">

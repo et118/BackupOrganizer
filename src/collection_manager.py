@@ -128,7 +128,7 @@ class CollectionManager:
         return output
     
     def json_overview(self) -> dict[str,dict[str,object]]:
-        """Returns a dictionary containing all DataCollection names mapped to their .json() value
+        """Returns a dictionary containing all DataCollection names mapped to their .full_json() value
         
         Returns:
             Example return value:
