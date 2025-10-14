@@ -1,0 +1,128 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <header>
+            <h1>Backup Organizer</h1>
+        </header>
+        <main>
+            <div id="searchdiv">
+                <!-- https://stackoverflow.com/questions/18309059/drop-down-menu-text-field-in-one -->
+                <input list="searchresults" type="search" id="searchinput" placeholder="Search">
+                <ul id="suggestions"></ul>
+                <script>
+                    async function search(searchterm) {
+                        const response = await fetch("/api/Search?case_sensitive=false&name=" + searchterm);
+                        if (response.ok) {
+                            const result = await response.json();
+                            Object.entries(result["search"]).forEach(([name, body]) => {
+                                option = document.createElement("li");
+                                option.innerHTML = "<a href=\"/info.html?name=" + name + "\">" + name + " | " + body.modification_date + "</a>";
+                                document.getElementById("suggestions").appendChild(option);
+                            });
+                        }
+                    }
+                    document.getElementById("searchinput").addEventListener("input", async function(event) {
+                        const datalist = document.getElementById("suggestions");
+                        Array.from(datalist.children).forEach(option => {
+                            if (option.value !== "No Results") {
+                                option.remove();
+                            }
+                        });
+                        const searchterm = event.target.value;
+                        if (searchterm.length === 0) return;
+
+                        await search(event.target.value);
+                    });
+                </script>
+            </div>
+            <div id="overviewdiv">
+                <a onclick="switchOverview()" href="#"><h2 id="overviewh2">Overview</h2></a>
+                <div id="overviewStatus"></div>
+                <table id="overview">
+
+                </table>
+                <script>
+                    let detailedOverview = false;
+                    function addOverviewRow(content, classname) {
+                        let tr = document.createElement("tr");
+                        
+                        content.forEach(element => {
+                            let td = document.createElement("td");
+                            td.innerText = element;
+                            td.className = classname;
+                            tr.appendChild(td);
+                        });
+                        document.getElementById("overview").appendChild(tr);
+                    }
+
+                    async function updateOverview() {
+                        const response = await fetch("/api/Overview")
+                        if (response.ok) {
+                            const result = await response.json()
+                            
+                            result["overview"].forEach(element => {
+                                addOverviewRow([element.split(" | ")[0], element.split(" | ")[1], element.split(" | ")[2]], "overviewtd");
+                            });
+                            
+                        } else {
+                            const result = await response.json()
+                            Object.entries(result["errors"]).forEach(([key, value]) => {
+                                const div = document.createElement("div");
+                                div.innerText = key + ": " + value;
+                                document.getElementById("overviewdiv").appendChild(div);
+                            });
+                        }
+                    }
+
+                    async function updateDetailedOverview() {
+                        const response = await fetch("/api/List")
+                        if (response.ok) {
+                            const result = await response.json()
+                            addOverviewRow(["Name", "Description", "Creation Date", "Modification Date", "Updated"], "detailedoverviewtd")
+                            Object.entries(result["overview"]).forEach(([name, body]) => {
+                                addOverviewRow([
+                                    name,
+                                    body["description"],
+                                    body["creation_date"],
+                                    body["modification_date"],
+                                    body["updated"]
+                                ], "detailedoverviewtd")
+                            });
+                            
+                        } else {
+                            const result = await response.json()
+                            Object.entries(result["errors"]).forEach(([key, value]) => {
+                                const div = document.createElement("div");
+                                div.innerText = key + ": " + value;
+                                document.getElementById("overviewdiv").appendChild(div);
+                            });
+                        }
+                    }
+
+                    function clearOverview() {
+                        document.querySelectorAll("#overview > tr").forEach(element => {
+                            element.remove();
+                        });
+                    }
+                    async function switchOverview() {
+                        if(detailedOverview) {
+                            clearOverview();
+                            updateOverview();
+                            document.getElementById("overviewh2").innerText = "Overview";
+                            detailedOverview = false;
+                        } else {
+                            clearOverview();
+                            updateDetailedOverview();
+                            document.getElementById("overviewh2").innerText = "Detailed Overview";
+                            detailedOverview = true;
+                        }
+                    }
+                    updateOverview()
+                </script>
+            </div>
+        </main>
+    </body>
+</html>

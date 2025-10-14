@@ -1,0 +1,124 @@
+header {
+    text-align: center;
+    width: 30%;
+    margin-left:auto;
+    margin-right: auto;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    border: 5px solid black;
+    background-color: rgb(195, 195, 195);
+}
+
+header > h1 {
+    margin-bottom:0;
+    margin-top:0;
+}
+
+main {
+    margin-top:30px;
+    margin-bottom:0;
+    margin-left: auto;
+    margin-right: auto;
+    width:80%;
+    border-radius: 20px;
+    border: 5px solid black;
+    background-color: rgb(195, 195, 195);
+}
+
+#searchdiv {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#searchinput {
+    width:100%;
+    border: 5px solid black;
+    background-color: rgb(235, 234, 234);
+    border-radius: 10px;
+    line-height: 30px;
+    font-size:20px;
+    margin-bottom:0;
+}
+
+#suggestions {
+    position: relative;
+    border: 5px solid black;
+    border-radius: 10px;
+    margin-top:0;
+    list-style: none;
+    margin:0;
+    padding:0;
+}
+
+#suggestions > li > a {
+    text-decoration: none;
+    display:block;
+}
+
+#suggestions > li {
+    padding-top:5px;
+    padding-bottom: 5px;
+    border:2px solid black;
+    width:100%;
+}
+
+#suggestions > li:hover {
+    background-color: rgb(170, 169, 169);
+}
+
+#overviewdiv {
+    width:80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 5px solid black;
+}
+
+.detailedoverviewsection {
+    outline: 1px solid black;
+    margin: 0;
+    width:calc(100% / 5);
+    display:inline-block;
+}
+
+#overviewdiv > a {
+    text-align: center;
+    line-height: 10px;
+    color:black;
+}
+
+#overview {
+    width: 100%;
+    padding:0;
+    border-spacing: 0;   
+    margin: 0;
+    border-collapse: collapse;
+}
+
+.overviewtd {
+    outline: 1px solid black;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+    width:calc(100% / 3);
+    vertical-align: top;
+    word-wrap:break-word;
+    word-break: break-all;
+    table-layout: fixed;
+}
+
+.detailedoverviewtd {
+    outline: 1px solid black;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+    width:calc(100% / 5);
+    vertical-align: top;
+    word-wrap:break-word;
+    word-break: break-all;
+    table-layout: fixed;
+}
