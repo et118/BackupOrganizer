@@ -251,6 +251,9 @@ class Edit(Resource):
             for key, value in args.items():
                 if key != "collection_name":
                     self.collection_manager.edit_collection(args["collection_name"], {key: value})
+                
+                if key == "name": #So we don't lose track of the name when changing it
+                    args["collection_name"] = value
             return {"errors": {}, "message": "Edit Was Successfull"}, 200
         except Exception as e:
             abort(400, errors={type(e).__name__: str(e)}, message="No Edit Was Made")

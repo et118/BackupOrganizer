@@ -65,10 +65,18 @@ class CollectionManager:
         Raises:
             `InvalidCollectionEditError`: Key '`key`' and associated value is not a valid edit
             `CollectionNotFoundError`: Collection with name '`collection_name`' not found
+            `CollectionAlreadyExistsError`: Collection with name '`name`' already exists
         """
         collection = self.get(collection_name)
         for key in updated_json:
-            if key == "name" and isinstance(updated_json["name"], str):
+            if key == "name" and isinstance(updated_json["name"], str): 
+                #Throws if name already exists preventing naming duplicates
+                if collection_name != updated_json["name"]:
+                    try:
+                        self.get(updated_json["name"])
+                        raise CollectionAlreadyExistsError(f"Collection with name '{updated_json["name"]}' already exists")
+                    except CollectionNotFoundError:
+                        pass
                 collection.name = updated_json["name"]
             elif key == "description" and isinstance(updated_json["description"], str):
                 collection.description = updated_json["description"]
