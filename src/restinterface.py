@@ -315,6 +315,37 @@ class Delete(Resource):
         except Exception as e:
             abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
 
+class ListBackups(Resource):
+    def __init__(self, api, *args, **kwargs):
+        super().__init__(api, args, kwargs)
+        self.collection_manager = kwargs["collection_manager"]
+    
+    @api.marshal_with(api.model("ListBackupsSuccess", {
+        "errors":   fields.Nested(api.model("NoError", {})),
+        "message":  fields.String(default="Successfully Fetched a List of BackupEntries"),
+        "backup_entries":     fields.Raw(   default={"BackupEntry1": {"date": "1960", "location": "/home/user/backup.bak"}, "BackupEntry2": {"date": "2015", "location": "On top of the really big shelf"}})}), code=200)
+    # Output for Code 400
+    @api.marshal_with(api.model("ListBackupsFailure", {
+        "errors":   fields.Raw(   default='{"MissingParameter": "Parameter \"name\" is required"}'),
+        "message":  fields.String(default="Action aborted. Exception raised"),
+        "backup_entries":     fields.Raw(   default="{}")}), code=400, description="Failure")
+    @api.doc(params={"name": {
+        "description": "The name of the DataCollection to get the BackupEntries from",
+        "default": "Unique Name",
+        "required": True
+    }})
+    def get(self):
+        name = request.args.get("name")
+        if name is None:
+            abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised")
+            return
+        try:
+            data_collection = collection_manager.get(name)
+            backup_entries = data_collection.get_backups_json()
+            return {"errors":{}, "message": "Successfully Fetched a List of BackupEntries", "backup_entries": backup_entries}
+        except Exception as e:
+            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
+
 collection_manager = CollectionManager()
 api.add_resource(Collection, "/Collection", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Overview, "/Overview", resource_class_kwargs={"collection_manager": collection_manager})
@@ -325,6 +356,7 @@ api.add_resource(Search, "/Search", resource_class_kwargs={"collection_manager":
 api.add_resource(Edit, "/Edit", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Unbackup, "/Unbackup", resource_class_kwargs={"collection_manager": collection_manager})
 api.add_resource(Delete, "/Delete", resource_class_kwargs={"collection_manager": collection_manager})
+api.add_resource(ListBackups, "/ListBackups", resource_class_kwargs={"collection_manager": collection_manager})
 
 if __name__ == "__main__": # Only intended for manual development outside container
     app.run(debug=True)

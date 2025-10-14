@@ -82,6 +82,23 @@ class DataCollection:
                 return backup
         raise BackupNotFoundError(f"BackupEntry with name '{backup_name}' not found in `backup_entries`")
 
+    def get_backups_json(self) -> dict[str, dict[str,str]]:
+        """Returns all BackupEntries as a json-object in the following format:
+
+        Returns:
+            Example Return Value:
+            ```python
+            {
+                "BackupEntry1": {"date": "1960", "location": "/home/user/backup.bak"},
+                "BackupEntry2": {"date": "2015", "location": "/home/user/backup2.bak"}
+            }
+            ```
+        """
+        output = {}
+        for entry in self.backup_entries:
+            output[entry.name] = {"date": entry.date, "location": entry.location}
+        return output
+
     def brief_str(self) -> str:
         """Returns a formatted string containing the following attributes as strings:
         * `name`
