@@ -1,3 +1,4 @@
+/*Header modifications because we have <a> tag in it now*/
 header > a{
     text-decoration: none;
     color:black;
@@ -7,18 +8,12 @@ header > a > h1 {
     margin:0;   
 }
 
-#infodiv {
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border:5px solid black;
-    overflow: auto;
+/*Edit Info Div*/
+#info_div {
     max-height: 50%;
 }
 
-#infodiv > table, input, textarea {
+#info_div > table, input, textarea {
     width:100%;
 }
 
@@ -53,36 +48,24 @@ header > a > h1 {
     color:white;
 }
 
-#backupdiv {
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border:5px solid black;
-    overflow: auto;
+/*Backup List*/
+#backup_div {
     max-height: 30%;
 }
 
-#backupdiv > table, input, textarea {
+#backup_div > table, input, textarea {
     width:100%;
 }
 
-#backuptable > tr {
+#backup_table > tr {
     outline: 2px solid black;
 }
 
-#createbackupdiv {
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border:5px solid black;
-    overflow: auto;
+/*Add Backup*/
+#create_backup_div {
     max-height: 30%;
 }
 
-#createbackupdiv > table, input, textarea {
+#create_backup_div > table, input, textarea {
     width:100%;
 }
