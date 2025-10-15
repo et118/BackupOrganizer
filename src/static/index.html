@@ -2,6 +2,20 @@
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" href="style.css">
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get("name");
+
+            async function handleErrors(response) {
+                    const result = await response.json()
+                    document.getElementById("status").innerHTML = "";
+                    Object.entries(result["errors"]).forEach(([key, value]) => {
+                        const div = document.createElement("div");
+                        div.innerText = key + ": " + value;
+                        document.getElementById("status").appendChild(div);
+                    });
+            }
+        </script>
     </head>
     <body>
         <header>
@@ -44,7 +58,13 @@
                     });
 
                     document.getElementById("searchinput").addEventListener("blur", function(event) {
-                        setTimeout(clearSuggestions, 100); /*Because otherwise we cant click in time*/
+                        setTimeout(() => {
+                            const active = document.activeElement;
+                            const suggestions = document.getElementById("suggestions");
+                            if (!suggestions.contains(active)) {
+                                clearSuggestions();
+                            }
+                        }, 100);
                     });
 
                 </script>
@@ -57,12 +77,19 @@
                 </table>
                 <script>
                     let detailedOverview = false;
-                    function addOverviewRow(content, classname) {
+                    function addOverviewRow(content, classname, link) {
                         let tr = document.createElement("tr");
                         
                         content.forEach(element => {
                             let td = document.createElement("td");
-                            td.innerText = element;
+                            if (link) {
+                                let atag = document.createElement("a");
+                                atag.href = "/info.html?name=" + content[0];
+                                atag.innerText = element;
+                                td.appendChild(atag);
+                            } else {
+                                td.innerText = element;
+                            }
                             td.className = classname;
                             tr.appendChild(td);
                         });
@@ -75,7 +102,7 @@
                             const result = await response.json()
                             
                             result["overview"].forEach(element => {
-                                addOverviewRow([element.split(" | ")[0], element.split(" | ")[1], element.split(" | ")[2]], "overviewtd");
+                                addOverviewRow([element.split(" | ")[0], element.split(" | ")[1], element.split(" | ")[2]], "overviewtd", true);
                             });
                             
                         } else {
@@ -92,7 +119,7 @@
                         const response = await fetch("/api/List")
                         if (response.ok) {
                             const result = await response.json()
-                            addOverviewRow(["Name", "Description", "Creation Date", "Modification Date", "Updated"], "detailedoverviewtd")
+                            addOverviewRow(["Name", "Description", "Creation Date", "Modification Date", "Updated"], "detailedoverviewtd", false)
                             Object.entries(result["overview"]).forEach(([name, body]) => {
                                 addOverviewRow([
                                     name,
@@ -100,7 +127,7 @@
                                     body["creation_date"],
                                     body["modification_date"],
                                     body["updated"]
-                                ], "detailedoverviewtd")
+                                ], "detailedoverviewtd", true)
                             });
                             
                         } else {
@@ -132,6 +159,70 @@
                         }
                     }
                     updateOverview()
+                </script>
+            </div>
+            <div id="infodiv">
+                <div id="status"></div>
+                <h2>Add Collection:</h2>
+                <table>
+                    <tr>
+                        <th colspan="2"><h2 id="collection_name"></h2></th>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Updated</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="name" value="Unique Name"></td>
+                        <td><input type="checkbox" id="updated" checked="true"></td>
+                    </tr>
+                    <tr>
+                        <th>Creation Date</th>
+                        <th>Modification Date</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="creation_date" placeholder="Default is current timestamp"></td>
+                        <td><input type="text" id="modification_date" placeholder="Default is current timestamp"></td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">Description</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><textarea id="description">Description</textarea></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input type="button" value="Add Collection" id="add" onclick="addCollection()"></td>
+                    </tr>
+                </table>
+                <script>
+                    async function addCollection() {
+                        let creation_date = document.getElementById("creation_date").value;
+                        let modification_date = document.getElementById("modification_date").value;
+
+                        let jsonBody = {
+                            name: document.getElementById("name").value,
+                            description: document.getElementById("description").value,
+                            creation_date: creation_date,
+                            modification_date: modification_date,
+                            updated: document.getElementById("updated").checked
+                        }
+                        if (creation_date == "") delete jsonBody["creation_date"]
+                        if (modification_date == "") delete jsonBody["modification_date"]
+
+                        const response = await fetch("/api/Collection", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(jsonBody)
+                        });
+                        
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            await handleErrors(response);
+                        }
+                    }
                 </script>
             </div>
         </main>

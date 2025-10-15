@@ -10,11 +10,16 @@
             async function handleErrors(response) {
                     const result = await response.json()
                     document.getElementById("status").innerHTML = "";
-                    Object.entries(result["errors"]).forEach(([key, value]) => {
+                    try {
+                        Object.entries(result["errors"]).forEach(([key, value]) => {
                         const div = document.createElement("div");
                         div.innerText = key + ": " + value;
                         document.getElementById("status").appendChild(div);
                     });
+                    } catch (error) {
+                        document.getElementById("status").innerText = error.message;
+                    }
+                    
             }
         </script>
     </head>
@@ -88,7 +93,7 @@
                         if (response.ok) {
                             window.location.href = "/info.html?name=" + document.getElementById("name").value;
                         } else {
-                            await handleErrors();
+                            await handleErrors(response);
                         }
                     }
 
@@ -104,22 +109,120 @@
                             document.getElementById("description").value = result["info"]["description"];
                             
                         } else {
-                            await handleErrors();
+                            await handleErrors(response);
                         }
                     }
                     getInfo();
                 </script>
             </div>
             <div id="backupdiv">
-                <table>
+                <table id="backuptable">
                     <tr>
                         <th>Name</th>
                         <th>Date</th>
-                        <th>Updated</th>
+                        <th>Location</th>
+                        <th>Delete</th>
                     </tr>
                 </table>
                 <script>
-                    
+                    async function deleteBackup(name) {
+                        const response = await fetch("/api/Unbackup", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                collection_name: document.getElementById("collection_name").innerText,
+                                backup_name: name,
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            window.location.href = "/info.html?name=" + document.getElementById("collection_name").innerText;
+                        } else {
+                            await handleErrors(response);
+                        }
+                    }
+
+                    async function getBackups() {
+                        document.getElementById("collection_name").innerText = name;
+                        const response = await fetch("/api/ListBackups?name=" + name);
+                        if (response.ok) {
+                            const result = await response.json();
+                            let table = document.getElementById("backuptable");
+                            Object.entries(result["backup_entries"]).forEach(([name, body]) => {
+                                let tr = document.createElement("tr");
+                                let td1 = document.createElement("td");
+                                td1.innerText = name;
+                                let td2 = document.createElement("td");
+                                td2.innerText = body["date"];
+                                let td3 = document.createElement("td");
+                                td3.innerText = body["location"];
+                                let td4 = document.createElement("td");
+                                let button = document.createElement("input");
+                                button.type = "button";
+                                button.value = "Delete";
+                                button.onclick = () => deleteBackup(name);
+                                td4.appendChild(button);
+
+                                tr.appendChild(td1);
+                                tr.appendChild(td2);
+                                tr.appendChild(td3);
+                                tr.appendChild(td4);
+                                table.appendChild(tr);
+                            });
+                            
+                        } else {
+                            await handleErrors(response);
+                        }
+                    }
+                    getBackups();
+                </script>
+            </div>
+            <div id="createbackupdiv">
+                <table>
+                    <tr>
+                        <th>Backup Name</th>
+                        <th>Backup Date</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="backupname" value="Unique Name"></td>
+                        <td><input type="text" id="backupdate" placeholder="Default is current timestamp"></td>
+                    </tr>
+                    <tr>
+                        <th>Backup Location</th>
+                        <th>Submit</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="backuplocation" value="Backup Location"></td>
+                        <td><input type="button" value="Create Backup Entry" id="createbackup" onclick="createBackupEntry()"></td>
+                    </tr>
+                </table>
+                <script>
+                    async function createBackupEntry() {
+                        let backup_date = document.getElementById("backupdate").value
+                        let jsonBody = {
+                                collection_name: document.getElementById("collection_name").innerText,
+                                backup_name: document.getElementById("backupname").value,
+                                backup_location: document.getElementById("backuplocation").value,
+                                backup_date: backup_date
+                            }
+                        if (backup_date == "") delete jsonBody["backup_date"];
+
+                        const response = await fetch("/api/Backup", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(jsonBody)
+                        });
+                        
+                        if (response.ok) {
+                            window.location.href = "/info.html?name=" + document.getElementById("name").value;
+                        } else {
+                            await handleErrors(response);
+                        }
+                    }
                 </script>
             </div>
         </main>

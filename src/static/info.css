@@ -61,9 +61,28 @@ header > a > h1 {
     margin-bottom: 10px;
     border:5px solid black;
     overflow: auto;
-    max-height: 50%;
+    max-height: 30%;
 }
 
 #backupdiv > table, input, textarea {
+    width:100%;
+}
+
+#backuptable > tr {
+    outline: 2px solid black;
+}
+
+#createbackupdiv {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border:5px solid black;
+    overflow: auto;
+    max-height: 30%;
+}
+
+#createbackupdiv > table, input, textarea {
     width:100%;
 }

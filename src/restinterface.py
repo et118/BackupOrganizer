@@ -156,11 +156,11 @@ class Backup(Resource):
         "errors":  fields.Raw(   default='{"BackupAlreadyExistsError": "BackupEntry with name \'backup_name\' already exists"}'),
         "message": fields.String(default="No Backup Was Created")}), code=400, description="Failure")
     def post(self):
+        print("OK")
         try:
             args = api.payload
             if "backup_date" not in args or args["backup_date"] is None:
                 args["backup_date"] = utility.get_current_datestring()
-            
             data_collection = self.collection_manager.get(args["collection_name"])
             data_collection.add_backup(args["backup_name"], args["backup_date"], args["backup_location"])
             return {"errors": {}, "message": "Backup Created Successfully"}, 200
