@@ -15,9 +15,9 @@ Each of the following functions corresponds to an endpoint.
 
 """
 
-from flask_restx import Api, fields
+from flask_restx import fields
 
-def get_collection_models(api : Api) -> dict[str, object]:
+def get_collection_models(api) -> dict[str, object]:
     collection_input_model = api.model("AddCollection", {
         "name":              fields.String(required=True, description="The unique name of the collection", default="Unique Name"),
         "description":       fields.String(required=True, description="The description of the collection", default="The description of the collection"),
@@ -42,7 +42,7 @@ def get_collection_models(api : Api) -> dict[str, object]:
         "failure": collection_failure_model
     }
 
-def get_overview_models(api : Api) -> dict[str, object]:
+def get_overview_models(api) -> dict[str, object]:
     overview_success_model = api.model("OverviewSuccess", {
         "errors":   fields.Nested(api.model("NoError", {})),
         "message":  fields.String(default="Successfully Fetched Overview"),
@@ -60,7 +60,7 @@ def get_overview_models(api : Api) -> dict[str, object]:
         "failure": overview_failure_model
     }
 
-def get_list_models(api : Api) -> dict[str, object]:
+def get_list_models(api) -> dict[str, object]:
     list_success_model = api.model("ListSuccess", {
         "errors":   fields.Nested(api.model("NoError", {})),
         "message":  fields.String(default="Successfully Fetched Overview"),
@@ -89,7 +89,7 @@ def get_list_models(api : Api) -> dict[str, object]:
         "failure": list_failure_model
     }
 
-def get_info_models(api : Api) -> dict[str, object]:
+def get_info_models(api) -> dict[str, object]:
     info_success_model = api.model("InfoSuccess", {
         "errors":   fields.Nested(api.model("NoError", {})),
         "message":  fields.String(default="Successfully Fetched Info"),
@@ -112,7 +112,7 @@ def get_info_models(api : Api) -> dict[str, object]:
         "failure": info_failure_model
     }
 
-def get_backup_models(api : Api) -> dict[str, object]:
+def get_backup_models(api) -> dict[str, object]:
     backup_input_model = api.model("AddBackup", {
         "collection_name": fields.String(required=True, description="The unique name of the collection which the backup will be added to", default="Unique Name"),
         "backup_name":     fields.String(required=True, description="The unique name of the backup to be created", default="Unique Name"),
@@ -136,7 +136,7 @@ def get_backup_models(api : Api) -> dict[str, object]:
         "failure": backup_failure_model
     }
 
-def get_search_models(api : Api) -> dict[str, object]:
+def get_search_models(api) -> dict[str, object]:
     search_success_model = api.model("SearchSuccess", {
         "errors":   fields.Nested(api.model("NoError", {})),
         "message":  fields.String(default="Successfully Fetched Search Results"),
@@ -159,7 +159,7 @@ def get_search_models(api : Api) -> dict[str, object]:
         "failure": search_failure_model
     }
 
-def get_edit_models(api : Api) -> dict[str, object]:
+def get_edit_models(api) -> dict[str, object]:
     edit_input_model = api.model("EditCollection", {
         "collection_name":       fields.String(required=True, description="The unique name of the collection to be edited", default="Unique Name"),
         "name":                  fields.String(required=False, description="The new unique name of the collection", default="New Unique Name"),
@@ -185,7 +185,7 @@ def get_edit_models(api : Api) -> dict[str, object]:
         "failure": edit_failure_model
     }
 
-def get_unbackup_models(api: Api) -> dict[str, object]:
+def get_unbackup_models(api) -> dict[str, object]:
     unbackup_input_model = api.model("UnBackup", {
         "collection_name":       fields.String(required=True, description="The unique name of the collection holding the backup to be deleted", default="Unique Name"),
         "backup_name":           fields.String(required=True, description="The unique name of the backup to delete", default="Unique Name")
@@ -207,7 +207,7 @@ def get_unbackup_models(api: Api) -> dict[str, object]:
         "failure": unbackup_failure_model
     }
 
-def get_delete_models(api: Api) -> dict[str, object]:
+def get_delete_models(api) -> dict[str, object]:
     delete_success_model = api.model("DeleteSuccess", {
         "errors":   fields.Nested(api.model("NoError", {})),
         "message":  fields.String(default="Successfully Deleted DataCollection")
@@ -223,7 +223,7 @@ def get_delete_models(api: Api) -> dict[str, object]:
         "failure": delete_failure_model
     }
 
-def get_listbackups_models(api: Api) -> dict[str, object]:
+def get_listbackups_models(api) -> dict[str, object]:
     listbackups_success_model = api.model("ListBackupsSuccess", {
         "errors":         fields.Nested(api.model("NoError", {})),
         "message":        fields.String(default="Successfully Fetched a List of BackupEntries"),
