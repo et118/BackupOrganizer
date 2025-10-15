@@ -2,14 +2,14 @@ from data_collection import DataCollection
 from custom_exceptions import CollectionAlreadyExistsError, CollectionNotFoundError, InvalidCollectionEditError
 
 class CollectionManager:
-    """Manager class holding and managing DataCollection objects.
+    """Manager class holding a list of DataCollection objects, and managing them.
 
     Attributes:
-        `data_collections`: The list of DataCollection objects. (private)
+        `data_collections`: The list of DataCollection objects.
     """
 
     def __init__(self) -> None:
-        """Initializes the instance with data_collections as an empty list of DataCollection Objects"""
+        """Initializes the instance with self.data_collections as an empty list of DataCollection Objects"""
         self.data_collections: list[DataCollection] = []
     
     def add_collection(self, name : str, description : str, creation_date : str, modification_date : str, updated : bool) -> DataCollection:
@@ -37,7 +37,7 @@ class CollectionManager:
         return data_collection
     
     def edit_collection(self, collection_name : str, updated_json : dict) -> None:
-        """Edits fields inside DataCollection with matching name to their corresponding keys in `updated_json`
+        """Edits fields inside the DataCollection with a case-sensitive matching name to `collection_name`.
 
         Example of all valid keys in an `updated_json` argument:
         ```python
@@ -57,10 +57,9 @@ class CollectionManager:
         }
         ```
 
-
         Args:
-            collection_name: The naem of the DataCollection to edit
-            updated_json: Json object (in the form of a dict in python) with key/value pairs of fields to edit
+            `collection_name`: The name of the DataCollection to edit
+            `updated_json`: Json object (in the form of a dict in python) with key/value pairs of fields to edit
 
         Raises:
             `InvalidCollectionEditError`: Key '`key`' and associated value is not a valid edit
@@ -70,7 +69,7 @@ class CollectionManager:
         collection = self.get(collection_name)
         for key in updated_json:
             if key == "name" and isinstance(updated_json["name"], str): 
-                #Throws if name already exists preventing naming duplicates
+                #Throws if name already exists preventing naming duplicates and overwriting
                 if collection_name != updated_json["name"]:
                     try:
                         self.get(updated_json["name"])
@@ -90,7 +89,7 @@ class CollectionManager:
                 raise InvalidCollectionEditError(f"Key '{key}' and associated value is not a valid edit")
 
     def delete_collection(self, collection_name : str) -> None:
-        """Deletes the DataCollection with matching name to `collection_name`
+        """Deletes the DataCollection with case-sensitive matching name to `collection_name` from self.data_collections
         
         Raises:
             `CollectionNotFoundError`: Collection with name '`collection_name`' not found
@@ -100,7 +99,7 @@ class CollectionManager:
 
     def overview(self) -> list[str]:
         """Returns a list of strings containing a small overview for each of the DataCollection objects
-        in data_collections.
+        in self.data_collections.
 
         Returns:
             A list of strings, one for each DataCollection, formatted according to the output of
@@ -118,12 +117,10 @@ class CollectionManager:
         return output
 
     def detailed_overview(self) -> list[list[str]]:
-        """Returns a detailed list containing a list with strings for each DataCollection object
-        in data_collections.
+        """Returns a detailed list with the output of DataCollection.full_str() for each DataCollection
+        in self.data_collections.
 
         Returns:
-            A list containing the output of DataCollection.full_str() for each DataCollection
-            in data_collections.\n
             Example return value:
             ```python
             [
@@ -139,7 +136,7 @@ class CollectionManager:
         return output
     
     def json_overview(self) -> dict[str,dict[str,object]]:
-        """Returns a dictionary containing all DataCollection names mapped to their .full_json() value
+        """Returns a dictionary DataCollection.full_json() output for each DataCollection in self.data_collections
         
         Returns:
             Example return value:
@@ -159,13 +156,14 @@ class CollectionManager:
         return output
 
     def info(self, collection_name : str) -> list[str]:
-        """Returns the result of DataCollection.full_str() for the first DataCollection with a matching name.
+        """Returns DataCollection.full_str() return value for the DataCollection with a case-senstive 
+        matching name to `collection_name`.
 
         Args:
             `collection_name`: The name to match
 
         Returns:
-            A list of strings formatted according to the output of `DataCollection.full_str()`. \n
+            A list of strings formatted according to the output of DataCollection.full_str().
             Example return value:
             ```python
                 ["DataCollection1", "The best collection", "Today", "13:58", "True"]
@@ -180,7 +178,7 @@ class CollectionManager:
         raise CollectionNotFoundError(f"Collection with name '{collection_name}' not found")
 
     def get(self, collection_name : str) -> DataCollection:
-        """Returns the first DataCollection with a matching name.
+        """Returns the DataCollection with a case-sensitive matching name to `collection_name`.
 
         Args:
             `collection_name`: The name to match
@@ -197,15 +195,14 @@ class CollectionManager:
         raise CollectionNotFoundError(f"Collection with name '{collection_name}' not found")
 
     def search(self, search_string : str, case_sensitive : bool = True) -> list[DataCollection]:
-        """Returns a list of DataCollection with `search_string` in their name. CASE SENSITIVE by default
+        """Returns a list of DataCollection objects with `search_string` in their name. CASE SENSITIVE by default
         
         Args:
             `search_string`: The substring that needs to be included in DataCollection.name
-            (optional) `case_sensitive`: Whether or not the search_string should be case sensitive. Default: True
+            `case_sensitive`: Whether or not the search_string should be case sensitive. (Default: True)
 
         Returns:
             Array with `DataCollection` objects matching the search_string
-        
         """
         output = []
         for collection in self.data_collections:

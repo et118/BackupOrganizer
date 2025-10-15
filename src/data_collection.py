@@ -2,7 +2,9 @@ from custom_exceptions import BackupAlreadyExistsError, BackupNotFoundError
 from backup_entry import BackupEntry
 
 class DataCollection:
-    """Storage class that holds a list of BackupEntries
+    """Storage class that holds a list of BackupEntries. 
+    
+    Each collection's BackupEntry needs to have a unique name since its the identifier for the BackupEntry.
 
     Attributes:
         `name`: The name of the DataCollection
@@ -13,7 +15,7 @@ class DataCollection:
         `backup_entries`: List containing all BackupEntries
     """
     def __init__(self, name : str, description : str, creation_date : str, modification_date : str, updated : bool) -> None:
-        """Initializes the instance with the arguments provided assigned to the attributes.
+        """Initializes the instance with the arguments provided assigned to their corresponding attributes.
         
         Args:
             `name`: The name of the DataCollection.
@@ -30,7 +32,7 @@ class DataCollection:
         self.backup_entries: list[BackupEntry] = []
 
     def add_backup(self, backup_name : str, backup_date : str, backup_location : str) -> BackupEntry:
-        """Adds a BackupEntry to the end of `backup_entries`
+        """Creates and adds a BackupEntry to the end of self.backup_entries
 
         Args:
             `backup_name`: The name of the new BackupEntry
@@ -66,10 +68,10 @@ class DataCollection:
             self.backup_entries.remove(backup_entry)
     
     def get_backup(self, backup_name : str) -> BackupEntry:
-        """Returns the first BackupEntry with a matching name
+        """Returns the first BackupEntry with a matching case-sensitive name
 
         Args:
-            `backup_name`: The name to match
+            `backup_name`: The case-sensitive name to match
         
         Returns:
             The `BackupEntry` that fulfills `BackupEntry.name == backup_name`
@@ -83,7 +85,7 @@ class DataCollection:
         raise BackupNotFoundError(f"BackupEntry with name '{backup_name}' not found in `backup_entries`")
 
     def get_backups_json(self) -> dict[str, dict[str,str]]:
-        """Returns all BackupEntries as a json-object in the following format:
+        """Returns all BackupEntries as a json-object (using dicts in python) in the following format:
 
         Returns:
             Example Return Value:
@@ -100,13 +102,13 @@ class DataCollection:
         return output
 
     def brief_str(self) -> str:
-        """Returns a formatted string containing the following attributes as strings:
+        """Returns a string containing the following attributes:
         * `name`
         * `modification_date`
         * `updated`
 
         Returns:
-            Returns a string with formatting like this:
+            Formatted like this:
                 ```python
                 "{name} | {modification_date} | Updated: {updated}"
                 ```
@@ -122,7 +124,7 @@ class DataCollection:
         return string
 
     def full_str(self) -> list[str]:
-        """Returns a list containing the attributes as strings:
+        """Returns a list containing attributes as strings:
 
         Returns:
             Formatted like this:
@@ -150,7 +152,7 @@ class DataCollection:
         return string_list
     
     def full_json(self) -> dict[str,object]:
-        """Returns a json object containing the following attributes:
+        """Returns a json object (using dicts in python) containing the following attributes:
         
         Returns:
             ```python

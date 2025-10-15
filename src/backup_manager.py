@@ -1,11 +1,11 @@
 from data_collection import DataCollection
 from backup_entry import BackupEntry
 class BackupManager():
-    """Unused Class being left for Archival purposes. 
+    """Unused Class left for Archival purposes. 
     
     Originally meant for creation/deletion/modifications of BackupEntry objects,
     but added unecessary abstraction. All functionality has been moved to 
-    the DataCollection object
+    the DataCollection object.
 
     BackupManager.add_backup() -> DataCollection.add_backup()
     """
