@@ -17,8 +17,8 @@ class Backup(Resource):
     def post(self):
         try:
             args = api.payload
-            if "backup_date" not in args or args["backup_date"] is None:
-                args["backup_date"] = utility.get_current_datestring()
+            args.setdefault("backup_date", utility.get_current_datestring())
+
             data_collection = self.collection_manager.get(args["collection_name"])
             data_collection.add_backup(args["backup_name"], args["backup_date"], args["backup_location"])
             return {"errors": {}, "message": "Backup Created Successfully"}, 200
