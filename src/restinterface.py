@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask_restx import Api, Resource, fields, abort
+from flask_restx import Api, Resource, abort
 from collection_manager import CollectionManager
 import api_models
 import utility
@@ -43,7 +43,7 @@ class Collection(Resource):
                 args["modification_date"], args["updated"])
             return {"errors": {}, "message": "Collection Created Successfully"}, 200
         except Exception as e:
-            abort(400, errors={type(e).__name__: str(e)}, message="No Collection Was Created")
+            abort(400, errors={type(e).__name__: str(e)}, message="No Collection Was Created") # type: ignore
 
 class Overview(Resource):
     models = api_models.get_overview_models(api)
@@ -59,7 +59,7 @@ class Overview(Resource):
             overview = self.collection_manager.overview()
             return {"errors":{}, "message": "Successfully Fetched Overview", "overview": overview}
         except Exception as e:
-            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
+            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised") # type: ignore
 
 class List(Resource):
     models = api_models.get_list_models(api)
@@ -75,7 +75,7 @@ class List(Resource):
             overview = self.collection_manager.json_overview()
             return {"errors":{}, "message": "Successfully Fetched a Detailed Overview", "overview": overview}
         except Exception as e:
-            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
+            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised") # type: ignore
 
 class Info(Resource):
     models = api_models.get_info_models(api)
@@ -95,14 +95,14 @@ class Info(Resource):
     def get(self):
         name = request.args.get("name")
         if name is None:
-            abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised")
+            abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised") # type: ignore
             return
         try:
             data_collection = collection_manager.get(name)
             info = data_collection.full_json()
             return {"errors":{}, "message": "Successfully Fetched Info", "info": info}
         except Exception as e:
-            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
+            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised") # type: ignore
 
 class Backup(Resource):
     models = api_models.get_backup_models(api)
@@ -123,7 +123,7 @@ class Backup(Resource):
             data_collection.add_backup(args["backup_name"], args["backup_date"], args["backup_location"])
             return {"errors": {}, "message": "Backup Created Successfully"}, 200
         except Exception as e:
-            abort(400, errors={type(e).__name__: str(e)}, message="No Backup Was Created")
+            abort(400, errors={type(e).__name__: str(e)}, message="No Backup Was Created") # type: ignore
 
 class Search(Resource):
     models = api_models.get_search_models(api)
@@ -151,7 +151,7 @@ class Search(Resource):
         case_sensitive = request.args.get("case_sensitive")
         
         if name is None:
-            abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised")
+            abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised") # type: ignore
             return
         if case_sensitive is None:
             case_sensitive = True
@@ -161,7 +161,7 @@ class Search(Resource):
             elif case_sensitive.lower() == "false":
                 case_sensitive = False
             else:
-                abort(400, errors={"InvalidParameter": "Parameter \"case_sensitive\" is not a valid value. Only (true/false) is valid input"}, message="Action aborted. Exception raised")
+                abort(400, errors={"InvalidParameter": "Parameter \"case_sensitive\" is not a valid value. Only (true/false) is valid input"}, message="Action aborted. Exception raised") # type: ignore
                 return
         try:
             search_result = collection_manager.search(name, case_sensitive=case_sensitive)
@@ -174,7 +174,7 @@ class Search(Resource):
 
             return {"errors":{}, "message": "Successfully Fetched Search Results", "search": output}
         except Exception as e:
-            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
+            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised") # type: ignore
 
 class Edit(Resource):
     models = api_models.get_edit_models(api)
@@ -197,7 +197,7 @@ class Edit(Resource):
                     args["collection_name"] = value
             return {"errors": {}, "message": "Edit Was Successfull"}, 200
         except Exception as e:
-            abort(400, errors={type(e).__name__: str(e)}, message="No Edit Was Made")
+            abort(400, errors={type(e).__name__: str(e)}, message="No Edit Was Made") # type: ignore
 
 class Unbackup(Resource):
     models = api_models.get_unbackup_models(api)
@@ -216,7 +216,7 @@ class Unbackup(Resource):
             collection.remove_backup(collection.get_backup(args["backup_name"]))
             return {"errors": {}, "message": "Deletion Was Successfull"}, 200
         except Exception as e:
-            abort(400, errors={type(e).__name__: str(e)}, message="No Deletion Was Made")
+            abort(400, errors={type(e).__name__: str(e)}, message="No Deletion Was Made") # type: ignore
 
 class Delete(Resource):
     models = api_models.get_delete_models(api)
@@ -237,13 +237,13 @@ class Delete(Resource):
     def delete(self):
         name = request.args.get("name", type=str)
         if name is None:
-            abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised")
+            abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised") # type: ignore
             return
         try:
             self.collection_manager.delete_collection(name)
             return {"errors":{}, "message": "Successfully Deleted DataCollection"}
         except Exception as e:
-            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
+            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised") # type: ignore
 
 class ListBackups(Resource):
     models = api_models.get_listbackups_models(api)
@@ -263,14 +263,14 @@ class ListBackups(Resource):
     def get(self):
         name = request.args.get("name")
         if name is None:
-            abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised")
+            abort(400, errors={"MissingParameter": "Parameter \"name\" is required"}, message="Action aborted. Exception raised") # type: ignore
             return
         try:
             data_collection = collection_manager.get(name)
             backup_entries = data_collection.get_backups_json()
             return {"errors":{}, "message": "Successfully Fetched a List of BackupEntries", "backup_entries": backup_entries}
         except Exception as e:
-            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised")
+            abort(400, errors= {type(e).__name__: str(e)}, message= "Action aborted. Exception raised") # type: ignore
 
 def add_resources(resource_classes, manager, api):
     for resource_class in resource_classes:
