@@ -33,6 +33,7 @@ def main():
     return app.send_static_file("index.html")
 
 def add_resources(resource_classes, manager, api):
+    """Loops over resource_classes of type flask-restx.Resource, and adds them to the api, passing along the collectionmanager"""
     for resource_class in resource_classes:
         api.add_resource(resource_class, "/"+resource_class.__name__, resource_class_kwargs={"collection_manager": manager})
 
